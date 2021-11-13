@@ -1,0 +1,11 @@
+__pycache__
+
+build
+old
+BakeData
+*.log
+*.exe
+*.dll
+notes.md
+.DS_Store
+.vscode
