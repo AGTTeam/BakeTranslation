@@ -2,7 +2,7 @@ import os
 import click
 from hacktools import common, cpk, psp
 
-version = "0.1.0"
+version = "0.3.0"
 data = "BakeData/"
 isofile = data + "bake.iso"
 isopatch = data + "bake_patched.iso"
@@ -44,24 +44,28 @@ def extract(iso, cpkparam, strparam, img):
 @click.option("--no-iso", is_flag=True, default=False)
 @click.option("--cpk", "cpkparam", is_flag=True, default=False)
 @click.option("--str", "strparam", is_flag=True, default=False)
+@click.option("--mov", is_flag=True, default=False)
 @click.option("--img", is_flag=True, default=False)
 @click.option("--bin", is_flag=True, default=False)
-def repack(no_iso, cpkparam, strparam, img, bin):
-    all = not cpkparam and not strparam and not img and not bin
+def repack(no_iso, cpkparam, strparam, mov, img, bin):
+    all = not cpkparam and not strparam and not mov and not img and not bin
     if all or strparam:
         import repack_str
         repack_str.run(data)
     if all or strparam:
         import repack_bin
         repack_bin.run(data)
+    if all or mov:
+        import repack_mov
+        repack_mov.run(data)
     if all or img:
-        # TODO
-        pass
-    if all or cpkparam or strparam or img:
+        import repack_img
+        repack_img.run(data)
+    if all or cpkparam or strparam or mov or img:
         common.logMessage("Repacking CPK ...")
         cpk.repack(cpkin + "rom.cpk", cpkin.replace("extract", "repack") + "rom.cpk", cpkout + "rom/", data + "repack_CPK/rom/")
         common.logMessage("Done!")
-    if all or cpkparam:
+    if all or cpkparam or mov:
         common.logMessage("Repacking Movies CPK ...")
         cpk.repack(cpkin + "exrom.cpk", cpkin.replace("extract", "repack") + "exrom.cpk", cpkout + "exrom/", data + "repack_CPK/exrom/")
         common.logMessage("Done!")

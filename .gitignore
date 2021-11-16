@@ -6,6 +6,7 @@ BakeData
 *.log
 *.exe
 *.dll
+*.MPS
 notes.md
 .DS_Store
 .vscode

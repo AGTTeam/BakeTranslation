@@ -145,6 +145,9 @@ def readAMT(file):
             image.bpp = 8
         image.tilewidth = 0x80 // image.bpp
         image.tileheight = 8
+        image.imgoff = -32
+        image.imgframeoff = texture.texdatapos
+        image.format = 0x03 if texture.format != 0x04 and texture.format != 0x05 else texture.format
         image.blockedwidth = math.ceil(image.width / image.tilewidth) * image.tilewidth
         image.blockedheight = math.ceil(image.height / image.tileheight) * image.tileheight
         amt.gim.images.append(image)
