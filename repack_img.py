@@ -8,7 +8,7 @@ def run(data):
     outfolder = data + "repack_CPK/rom/"
     workfolder = data + "work_IMG/"
 
-    common.logMessage("Repacking IMG from", outfolder, "...")
+    common.logMessage("Repacking IMG from", workfolder, "...")
     files = common.getFiles(infolder, ".amt")
     files.append("loading_icon.amt")
     repacked = 0

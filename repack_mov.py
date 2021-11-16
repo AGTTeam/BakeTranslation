@@ -7,6 +7,7 @@ def run(data):
     cpkout = data + "extract_CPK/"
 
     common.logMessage("Repacking movies ...")
+    repacked = 0
     for file in common.getFiles(moviesin):
         pmffile = file.replace(".MPS", ".pmf")
         # Get the original length for the PMF file
@@ -18,4 +19,5 @@ def run(data):
             totlength = f.readUInt()
         # Write the new header
         psp.mpstopmf(moviesin + file, pmffolder.replace("extract_", "repack_") + pmffile, totlength)
-    common.logMessage("Done!")
+        repacked += 1
+    common.logMessage("Done! Repacked", repacked, "files")
