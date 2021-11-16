@@ -55,6 +55,12 @@
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'",
             "version": "==21.2.0"
         },
+        "bitarray": {
+            "hashes": [
+                "sha256:f19c62425576d3d1821ed711b94d1a4e5ede8f05ca121e99b6d978ed49c7a765"
+            ],
+            "version": "==2.3.4"
+        },
         "click": {
             "hashes": [
                 "sha256:353f466495adaeb40b6b5f592f9f91cb22372351c84caeb068132442a4518ef3",
@@ -88,11 +94,11 @@
         },
         "hacktools": {
             "hashes": [
-                "sha256:12aac762ab85ee6943e5a253a650aabb896f115f5f6b53ddca13984c4f2d772b",
-                "sha256:df5633f9c5f1d1c26a287eb57a85bc5d4805ffbeaf1071620c16bd8ed74e6733"
+                "sha256:385254d4c3a44b5254c060e93f11c50c1e94d07cc6e4e4ea6368b2b8309e72e5",
+                "sha256:9874093dfdba056956645880721256bea9269d3fcc37aa3d618abc44488a684d"
             ],
             "index": "pypi",
-            "version": "==0.21.0"
+            "version": "==0.21.1"
         },
         "ips-util": {
             "hashes": [
