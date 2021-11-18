@@ -2,7 +2,7 @@ import os
 import click
 from hacktools import common, cpk, psp
 
-version = "0.3.0"
+version = "0.4.0"
 data = "BakeData/"
 isofile = data + "bake.iso"
 isopatch = data + "bake_patched.iso"
@@ -52,7 +52,7 @@ def repack(no_iso, cpkparam, strparam, mov, img, bin):
     if all or strparam:
         import repack_str
         repack_str.run(data)
-    if all or strparam:
+    if all or bin:
         import repack_bin
         repack_bin.run(data)
     if all or mov:
