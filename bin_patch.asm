@@ -29,7 +29,59 @@
   sw a2,0x8(a1)
   j SCE_SAVE_RET
   li a2,0x13
+
+  VERTICAL_TEXT:
+  lw a0,0x30(s1)
+  sra a0,a0,0x6
+  j VERTICAL_TEXT_RET
+  move a1,a0
+
+  CONVERT_VERTICAL:
+  move s1,a1
+  ;Check if we're drawing vertical text
+  lw a1,0x24(a2)
+  bne a1,0x1,@@ret
+  andi a0,a0,0xffff
+  ;Return if the character is > 0x7e
+  bgt a0,0x7e,@@ret
+  nop
+  ;Return an hardcoded value for the space
+  beql a0,0x20,@@ret
+  li a0,0x3005
+  ;Add 0x3020 to the character code and tweak it for charcode gaps
+  blt a0,0x70,@@done
+  addiu a1,a0,0x3020
+  blt a0,0x72,@@done
+  addiu a1,a1,2
+  addiu a1,a1,13
+  @@done:
+  move a0,a1
+  @@ret:
+  move s6,a0
+  j CONVERT_VERTICAL_RET
+  move a1,s1
   .endarea
+
+;Handle vertical text VWF
+.org 0x088e4da8
+  j VERTICAL_TEXT
+  sw zero,0x2c(s1)
+  nop
+  nop
+  nop
+  VERTICAL_TEXT_RET:
+
+;Convert the character code for vertical text
+.org 0x088e49ec
+  j CONVERT_VERTICAL
+  move s0,a1
+  CONVERT_VERTICAL_RET:
+
+;This function has a list of harcoded characters that are offset
+;when rendering them vertically, we just don't care about this
+.org 0x088266bc
+  jr ra
+  li v0,0x0
 
 ;Set the language to 1 (English) and buttonSwap to 1 (X) for syscalls
 ;sceImposeSetLanguageMode

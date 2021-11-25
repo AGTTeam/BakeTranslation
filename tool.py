@@ -1,3 +1,5 @@
+import codecs
+import json
 import os
 import click
 from hacktools import common, cpk, psp
@@ -14,14 +16,18 @@ replacefolder = data + "replace/"
 cpkin = infolder + "PSP_GAME/USRDIR/rom/"
 cpkout = data + "extract_CPK/"
 
+fontin = data + "extract/PSP_GAME/USRDIR/rom/font/ESC_HGPMB.pgf"
+fontbmpout = data + "out_FONT/"
+fontconfout = data + "fontconfig_output.txt"
 
 @common.cli.command()
 @click.option("--iso", is_flag=True, default=False)
 @click.option("--cpk", "cpkparam", is_flag=True, default=False)
 @click.option("--str", "strparam", is_flag=True, default=False)
 @click.option("--img", is_flag=True, default=False)
-def extract(iso, cpkparam, strparam, img):
-    all = not iso and not cpkparam and not strparam and not img
+@click.option("--font", is_flag=True, default=False)
+def extract(iso, cpkparam, strparam, img, font):
+    all = not iso and not cpkparam and not strparam and not img and not font
     if all or iso:
         psp.extractIso(isofile, infolder, outfolder)
     if all or cpkparam:
@@ -38,6 +44,11 @@ def extract(iso, cpkparam, strparam, img):
     if all or img:
         import extract_img
         extract_img.run(data)
+    if all or font:
+        common.logMessage("Extracting font to", fontconfout, "...")
+        common.makeFolder(fontbmpout)
+        psp.extractPGFData(fontin, fontconfout, fontbmpout)
+        common.logMessage("Done!")
 
 
 @common.cli.command()
@@ -47,8 +58,12 @@ def extract(iso, cpkparam, strparam, img):
 @click.option("--mov", is_flag=True, default=False)
 @click.option("--img", is_flag=True, default=False)
 @click.option("--bin", is_flag=True, default=False)
-def repack(no_iso, cpkparam, strparam, mov, img, bin):
-    all = not cpkparam and not strparam and not mov and not img and not bin
+@click.option("--font", is_flag=True, default=False)
+def repack(no_iso, cpkparam, strparam, mov, img, bin, font):
+    all = not cpkparam and not strparam and not mov and not img and not bin and not font
+    if all or font:
+        import repack_font
+        repack_font.run(data)
     if all or strparam:
         import repack_str
         repack_str.run(data)
@@ -103,7 +118,8 @@ def names():
 def translate(text):
     ret = ""
     for c in text:
-        charhex = common.toHex(ord(c)).zfill(4)
+        charcode = ord(c)
+        charhex = common.toHex(charcode).zfill(4)
         ret += charhex[2:4] + charhex[0:2]
     common.logMessage(ret)
     searchbytes = bytes.fromhex(ret)
@@ -113,6 +129,24 @@ def translate(text):
             pos = alldata.find(searchbytes)
             if pos >= 0:
                 common.logMessage("Found string at", common.toHex(pos), "in file", file)
+
+
+@common.cli.command()
+@click.argument("text")
+def translatevert(text):
+    ret = ""
+    for c in text:
+        charcode = ord(c)
+        if charcode == 0x20:
+            ret += chr(0x3005)
+        else:
+            charcode += 0x3020
+            if ord(c) >= 0x70:
+                charcode += 2
+            if ord(c) >= 0x72:
+                charcode += 13
+            ret += chr(charcode)
+    common.logMessage(ret)
 
 
 def guessRomExtension(data, entry, filename):
