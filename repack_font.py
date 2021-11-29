@@ -39,9 +39,10 @@ def run(data):
                 if ord(char) >= 0x72:
                     charcode += 13
                 newchar = chr(charcode)
-            data = json.dumps(glyph)
-            f.write("#" + char + "\n" + newchar + "=" + data + "\n")
+            fontdata = json.dumps(glyph)
+            f.write("#" + char + "\n" + newchar + "=" + fontdata + "\n")
     psp.repackPGFData(fontin, fontout, fontconftemp, fontbmpin)
+    common.makeFolders(data + "repack_CPK/rom")
     common.copyFile(fontout, fontout2)
     os.remove(fontconftemp)
     common.logMessage("Done!")
