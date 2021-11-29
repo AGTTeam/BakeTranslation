@@ -149,6 +149,15 @@ def translatevert(text):
     common.logMessage(ret)
 
 
+@common.cli.command()
+def copymovies():
+    for filename in common.showProgress(common.getFiles(data + "movies/original_pmf/")):
+        filename = filename.replace(".pmf", "")
+        umdpath = os.path.expanduser("~/Documents/UmdStreamComposer/MuxWork/" + filename + "/00001/00001.MPS").replace("\\", "/")
+        if os.path.isfile(umdpath):
+            common.copyFile(umdpath, data + "work_MPS/" + filename + ".MPS")
+
+
 def guessRomExtension(data, entry, filename):
     import struct
     magicint = struct.unpack('<I', data[:4])[0]
