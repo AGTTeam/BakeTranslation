@@ -28,7 +28,7 @@ def run(data):
             common.logDebug("Processing", file, "...")
             size = os.path.getsize(infolder + file)
             with common.Stream(infolder + file, "rb") as fin:
-                common.makeFolders(infolder + file)
+                common.makeFolders(os.path.dirname(outfolder + file))
                 with common.Stream(outfolder + file, "wb") as f:
                     strnum = fin.readUInt()
                     f.writeUInt(strnum)

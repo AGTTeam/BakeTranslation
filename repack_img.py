@@ -23,7 +23,7 @@ def run(data):
                 outpath = data + "repack/PSP_GAME/USRDIR/nowloading/" + file
             amt = game.readAMT(filepath)
             if amt is not None:
-                common.makeFolders(outpath)
+                common.makeFolders(os.path.dirname(outpath))
                 common.copyFile(filepath, outpath)
                 psp.writeGIM(outpath, amt.gim, pngfile)
                 repacked += 1
