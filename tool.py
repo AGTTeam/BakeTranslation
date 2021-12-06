@@ -15,6 +15,7 @@ outfolder = data + "repack/"
 replacefolder = data + "replace/"
 cpkin = infolder + "PSP_GAME/USRDIR/rom/"
 cpkout = data + "extract_CPK/"
+replacecpkfolder = data + "replace_CPK/"
 
 fontin = data + "extract/PSP_GAME/USRDIR/rom/font/ESC_HGPMB.pgf"
 fontbmpout = data + "out_FONT/"
@@ -78,6 +79,7 @@ def repack(no_iso, cpkparam, strparam, mov, img, bin, font):
         repack_img.run(data)
     if all or cpkparam or strparam or mov or img:
         common.logMessage("Repacking CPK ...")
+        common.mergeFolder(replacecpkfolder, data + "repack_CPK/rom/")
         cpk.repack(cpkin + "rom.cpk", cpkin.replace("extract", "repack") + "rom.cpk", cpkout + "rom/", data + "repack_CPK/rom/")
         common.logMessage("Done!")
     if all or cpkparam or mov:
@@ -163,6 +165,8 @@ def guessRomExtension(data, entry, filename):
     magicint = struct.unpack('<I', data[:4])[0]
     magicshort = struct.unpack('<H', data[:2])[0]
     magicstr = data[:4].decode('ascii', 'ignore')
+    if entry.id == 8067 or entry.id == 8068 or entry.id == 8069:
+        return filename + ".png"
     if magicstr == "#AMA":
         return filename + ".ama"
     if magicstr == "#AMB":
