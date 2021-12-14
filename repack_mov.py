@@ -18,6 +18,8 @@ def run(data):
             f.seek(0x5c)
             totlength = f.readUInt()
         # Write the new header
-        psp.mpstopmf(moviesin + file, pmffolder.replace("extract_", "repack_") + pmffile, totlength)
+        outfile = pmffolder.replace("extract_", "repack_") + pmffile
+        common.makeFolders(os.path.dirname(outfile))
+        psp.mpstopmf(moviesin + file, outfile, totlength)
         repacked += 1
     common.logMessage("Done! Repacked", repacked, "files")
