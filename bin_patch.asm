@@ -83,6 +83,17 @@
   jr ra
   li v0,0x0
 
+;Swap date order for save games
+.org 0x088094a0
+  lhu a2,0x214(sp) ;DD
+  lhu a3,0x212(sp) ;MM
+  lhu t0,0x210(sp) ;YYYY
+
+;Swap order for "%sで対%s語録が|使えるようになりました。||対%s戦オススメの語録で|シングルモードでのみ使用可能な語録です。"
+.org 0x088cd2d4
+  move a2,s1
+  move a3,s3
+
 ;Set the language to 1 (English) and buttonSwap to 1 (X) for syscalls
 ;sceImposeSetLanguageMode
 .org 0x0880706c
