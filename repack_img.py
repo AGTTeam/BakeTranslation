@@ -25,6 +25,14 @@ def run(data):
             if amt is not None:
                 common.makeFolders(os.path.dirname(outpath))
                 common.copyFile(filepath, outpath)
+                if "ID14158" in file:
+                    # Tweak the first palette for logo file to get a better result
+                    with common.Stream(outpath, "rb+") as f:
+                        f.seek(amt.textures[1].paldatapos)
+                        paldata = f.read(amt.textures[1].paldatasize * 2)
+                        f.seek(amt.textures[0].paldatapos)
+                        f.write(paldata)
+                        amt.textures[0].palette = amt.gim.images[0].palette = amt.textures[1].palette
                 psp.writeGIM(outpath, amt.gim, pngfile)
                 repacked += 1
     common.logMessage("Done! Repacked", repacked, "files")
