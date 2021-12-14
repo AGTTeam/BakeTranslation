@@ -60,6 +60,45 @@
   move s6,a0
   j CONVERT_VERTICAL_RET
   move a1,s1
+
+  ;A copy of the function at 0x088ae390 to return a short character name
+  GET_SHORT_CHAR_NAME3:
+  addiu sp,sp,-0x10
+  sw ra,0x0(sp)
+  jal GET_SHORT_CHAR_NAME2
+	lw a0,0x50B8(a0)
+	lw a0,0x0897f380
+	jal 0x088b58d8
+	move a1,v0
+	lw ra,0x0(sp)
+	jr ra
+	addiu sp,sp,0x10
+
+  ;A copy of the function at 0x08833bf8 to return a short character name
+  GET_SHORT_CHAR_NAME2:
+	addiu sp,sp,-0x10
+	lui a1,0x898
+	sw s0,0x0(sp)
+	sw ra,0x4(sp)
+	jal	GET_SHORT_CHAR_NAME
+	lw s0,-0x70a0(a1)
+	move a0,s0
+	li a1,0
+	jal 0x0880a504
+	move a2,v0
+	lw s0,0x0(sp)
+	lw ra,0x4(sp)
+	jr ra
+	addiu sp,sp,0x10
+
+  ;Return short character name ID
+  GET_SHORT_CHAR_NAME:
+	sltiu	a1,a0,0xc
+	beq	a1,zero,GET_SHORT_CHAR_NAME_RET
+  addiu v0,a0,0x5b
+  GET_SHORT_CHAR_NAME_RET:
+	jr ra
+	nop
   .endarea
 
 ;Handle vertical text VWF
@@ -97,6 +136,40 @@
 ;Add more space for the "Glossary n" lines
 .org 0x0881da9c
   addiu s4,s4,0x12
+
+;Use short character names in the menu
+;Original:
+;4F: 阿良々木暦
+;50: 戦場ヶ原ひたぎ
+;51: 八九寺真宵
+;54: 神原駿河
+;52: 千石撫子
+;53: 羽川翼
+;55: ブラック羽川
+;59: 阿良々木火憐=
+;5A: 阿良々木月火=
+;56: 忍野メメ
+;57: 忍野忍
+.macro short_char_names
+  .dw 0x5b ;暦
+  .dw 0x5c ;ひたぎ
+  .dw 0x5d ;真宵
+  .dw 0x60 ;駿河
+  .dw 0x5e ;撫子
+  .dw 0x5f ;翼
+  .dw 0x61 ;猫
+  .dw 0x65 ;火憐
+  .dw 0x66 ;月火
+  .dw 0x62 ;メメ
+  .dw 0x63 ;忍
+.endmacro
+.org 0x0897c728
+  short_char_names
+.org 0x0897dd7c
+  short_char_names
+
+.org 0x088af798
+  jal GET_SHORT_CHAR_NAME3 - 0x8804000
 
 ;Set the language to 1 (English) and buttonSwap to 1 (X) for syscalls
 ;sceImposeSetLanguageMode
