@@ -66,39 +66,39 @@
   addiu sp,sp,-0x10
   sw ra,0x0(sp)
   jal GET_SHORT_CHAR_NAME2
-	lw a0,0x50B8(a0)
-	lw a0,0x0897f380
-	jal 0x088b58d8
-	move a1,v0
-	lw ra,0x0(sp)
-	jr ra
-	addiu sp,sp,0x10
+  lw a0,0x50B8(a0)
+  lw a0,0x0897f380
+  jal 0x088b58d8
+  move a1,v0
+  lw ra,0x0(sp)
+  jr ra
+  addiu sp,sp,0x10
 
   ;A copy of the function at 0x08833bf8 to return a short character name
   GET_SHORT_CHAR_NAME2:
-	addiu sp,sp,-0x10
-	lui a1,0x898
-	sw s0,0x0(sp)
-	sw ra,0x4(sp)
-	jal	GET_SHORT_CHAR_NAME
-	lw s0,-0x70a0(a1)
-	move a0,s0
-	li a1,0
-	jal 0x0880a504
-	move a2,v0
-	lw s0,0x0(sp)
-	lw ra,0x4(sp)
-	jr ra
-	addiu sp,sp,0x10
+  addiu sp,sp,-0x10
+  lui a1,0x898
+  sw s0,0x0(sp)
+  sw ra,0x4(sp)
+  jal  GET_SHORT_CHAR_NAME
+  lw s0,-0x70a0(a1)
+  move a0,s0
+  li a1,0
+  jal 0x0880a504
+  move a2,v0
+  lw s0,0x0(sp)
+  lw ra,0x4(sp)
+  jr ra
+  addiu sp,sp,0x10
 
   ;Return short character name ID
   GET_SHORT_CHAR_NAME:
-	sltiu	a1,a0,0xc
-	beq	a1,zero,GET_SHORT_CHAR_NAME_RET
+  sltiu  a1,a0,0xc
+  beq  a1,zero,GET_SHORT_CHAR_NAME_RET
   addiu v0,a0,0x5b
   GET_SHORT_CHAR_NAME_RET:
-	jr ra
-	nop
+  jr ra
+  nop
   .endarea
 
 ;Handle vertical text VWF
