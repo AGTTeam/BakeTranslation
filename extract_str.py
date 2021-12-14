@@ -3,7 +3,7 @@ import game
 from hacktools import common
 
 
-def run(data, writeid=True):
+def run(data, writeid=False):
     infolder = data + "extract_CPK/rom/"
     outfile = data + "str_output.txt"
 
