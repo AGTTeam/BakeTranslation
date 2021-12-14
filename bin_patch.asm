@@ -80,7 +80,7 @@
   lui a1,0x898
   sw s0,0x0(sp)
   sw ra,0x4(sp)
-  jal  GET_SHORT_CHAR_NAME
+  jal GET_SHORT_CHAR_NAME
   lw s0,-0x70a0(a1)
   move a0,s0
   li a1,0
@@ -93,8 +93,9 @@
 
   ;Return short character name ID
   GET_SHORT_CHAR_NAME:
-  sltiu  a1,a0,0xc
-  beq  a1,zero,GET_SHORT_CHAR_NAME_RET
+  sltiu a1,a0,0xc
+  beq a1,zero,GET_SHORT_CHAR_NAME_RET
+  nop
   addiu v0,a0,0x5b
   GET_SHORT_CHAR_NAME_RET:
   jr ra
