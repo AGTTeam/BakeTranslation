@@ -100,6 +100,16 @@
   GET_SHORT_CHAR_NAME_RET:
   jr ra
   nop
+
+  ;Wrap the sprintf function by repeating the parameter
+  SPRINTF_REPEAT:
+  addiu sp,sp,-0x10
+  sw ra,0x0(sp)
+  jal 0x088cf7f8
+  move a3,a2
+  lw ra,0x0(sp)
+  jr ra
+  addiu sp,sp,0x10
   .endarea
 
 ;Handle vertical text VWF
@@ -169,8 +179,17 @@
 .org 0x0897dd7c
   short_char_names
 
+;Use short character names in menu headers
 .org 0x088af798
   jal GET_SHORT_CHAR_NAME3 - 0x8804000
+
+;Repeat sprintf parameter for these two strings:
+;"%sの「中敵」語録が開放されました。|フリー対戦モード限定のＣＯＭ専用語録です。|より強力なＣＯＭと会話劇ができます。"
+.org 0x088cd1e4
+  jal SPRINTF_REPEAT - 0x8804000
+;"%sの「強敵」語録が開放されました。|フリー対戦モード限定のＣＯＭ専用語録です。|最強難易度に挑戦してみてください！"
+.org 0x088cd214
+  jal SPRINTF_REPEAT - 0x8804000
 
 ;Set the language to 1 (English) and buttonSwap to 1 (X) for syscalls
 ;sceImposeSetLanguageMode

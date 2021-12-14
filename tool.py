@@ -4,7 +4,7 @@ import os
 import click
 from hacktools import common, cpk, psp
 
-version = "0.4.0"
+version = "0.5.0"
 data = "BakeData/"
 isofile = data + "bake.iso"
 isopatch = data + "bake_patched.iso"
