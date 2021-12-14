@@ -191,6 +191,11 @@
 .org 0x088cd214
   jal SPRINTF_REPEAT - 0x8804000
 
+;Align "Achievements" header
+.org 0x088bc20c
+  ;lui v0,0x41a0
+  lui v0,0x4140
+
 ;Set the language to 1 (English) and buttonSwap to 1 (X) for syscalls
 ;sceImposeSetLanguageMode
 .org 0x0880706c
