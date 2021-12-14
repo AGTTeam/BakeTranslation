@@ -94,6 +94,10 @@
   move a2,s1
   move a3,s3
 
+;Add more space for the "Glossary n" lines
+.org 0x0881da9c
+  addiu s4,s4,0x12
+
 ;Set the language to 1 (English) and buttonSwap to 1 (X) for syscalls
 ;sceImposeSetLanguageMode
 .org 0x0880706c
