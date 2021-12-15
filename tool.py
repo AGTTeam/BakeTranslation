@@ -4,7 +4,7 @@ import os
 import click
 from hacktools import common, cpk, psp
 
-version = "0.5.0"
+version = "0.6.0"
 data = "BakeData/"
 isofile = data + "bake.iso"
 isopatch = data + "bake_patched.iso"
@@ -149,6 +149,18 @@ def translatevert(text):
                 charcode += 13
             ret += chr(charcode)
     common.logMessage(ret)
+
+
+@common.cli.command()
+@click.argument("file")
+def ama(file):
+    file = cpkout + "rom/" + file
+    filesize = os.path.getsize(file)
+    with common.Stream(file, "rb") as f:
+        while f.tell() < filesize:
+            float = f.readFloat()
+            f.seek(-4, 1)
+            common.logMessage(common.toHex(f.tell()), float, f.readInt())
 
 
 @common.cli.command()

@@ -1,5 +1,6 @@
 import os
 import game
+import game_ama
 from hacktools import common, psp
 
 
@@ -35,4 +36,13 @@ def run(data):
                         amt.textures[0].palette = amt.gim.images[0].palette = amt.textures[1].palette
                 psp.writeGIM(outpath, amt.gim, pngfile)
                 repacked += 1
+                if file in game_ama.files:
+                    amadata = game_ama.files[file]
+                    amain = filepath.replace(file, amadata[0])
+                    amaout = amain.replace("extract_CPK", "repack_CPK")
+                    common.copyFile(amain, amaout)
+                    with common.Stream(amaout, "rb+") as f:
+                        for i in range(1, len(amadata)):
+                            f.seek(amadata[i][0])
+                            f.writeFloat(amadata[i][1])
     common.logMessage("Done! Repacked", repacked, "files")
