@@ -21,5 +21,6 @@ files = {
     ],
 }
 backwards_pal = [
+    "ID14154.amt",
     "ID14196.amt",
 ]
