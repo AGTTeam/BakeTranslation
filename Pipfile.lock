@@ -94,11 +94,11 @@
         },
         "hacktools": {
             "hashes": [
-                "sha256:3f5a8d20f4dc974726aab488e85e11b2a01d62545b8f4b60aed7a72ffe019f3b",
-                "sha256:a6a1a3597ab5a44fa6db8b62d57eb71da739b7a97aadd9125a18f0618094c65c"
+                "sha256:5313052a79a65a53a700ede6329664b2350bb62bf9ea1a2d27ff667019e1951b",
+                "sha256:666361d498b66812b1c413a9ecbd700558a741d8c96eb4723437d91aa85021eb"
             ],
             "index": "pypi",
-            "version": "==0.23.2"
+            "version": "==0.23.3"
         },
         "ips-util": {
             "hashes": [

@@ -34,7 +34,7 @@ def run(data):
                         f.seek(amt.textures[0].paldatapos)
                         f.write(paldata)
                         amt.textures[0].palette = amt.gim.images[0].palette = amt.textures[1].palette
-                psp.writeGIM(outpath, amt.gim, pngfile)
+                psp.writeGIM(outpath, amt.gim, pngfile, file in game_ama.backwards_pal)
                 repacked += 1
                 if file in game_ama.files:
                     amadata = game_ama.files[file]
