@@ -34,6 +34,11 @@ files = {
         # Move the centered one down 10 pixels
         (0x404, 140),
     ],
+    "ID13936.amt": [
+        "ID13935.ama",
+        (0x1160, 96),
+        (0x1168, 128),
+    ],
 }
 backwards_pal = [
     "ID14154.amt",
