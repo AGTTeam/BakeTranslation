@@ -4,7 +4,7 @@ import os
 import click
 from hacktools import common, cpk, psp
 
-version = "0.6.1"
+version = "0.6.2"
 data = "BakeData/"
 isofile = data + "bake.iso"
 isopatch = data + "bake_patched.iso"
@@ -40,11 +40,11 @@ def extract(iso, cpkparam, strparam, img, font):
         cpk.extract(cpkin + "exrom.cpk", cpkout + "exrom/", guessExromExtension)
         common.logMessage("Done!")
     if all or strparam:
-        import extract_str
-        extract_str.run(data)
+        import format_str
+        format_str.extract(data)
     if all or img:
-        import extract_img
-        extract_img.run(data)
+        import format_img
+        format_img.extract(data)
     if all or font:
         common.logMessage("Extracting font to", fontconfout, "...")
         common.makeFolder(fontbmpout)
@@ -66,8 +66,8 @@ def repack(no_iso, cpkparam, strparam, mov, img, bin, font):
         import repack_font
         repack_font.run(data)
     if all or strparam:
-        import repack_str
-        repack_str.run(data)
+        import format_str
+        format_str.repack(data)
     if all or bin:
         import repack_bin
         repack_bin.run(data)
@@ -75,8 +75,8 @@ def repack(no_iso, cpkparam, strparam, mov, img, bin, font):
         import repack_mov
         repack_mov.run(data)
     if all or img:
-        import repack_img
-        repack_img.run(data)
+        import format_img
+        format_img.repack(data)
     if all or cpkparam or strparam or mov or img:
         common.logMessage("Repacking CPK ...")
         common.mergeFolder(replacecpkfolder, data + "repack_CPK/rom/")
