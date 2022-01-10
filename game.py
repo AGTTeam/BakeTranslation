@@ -36,8 +36,15 @@ files = {
     ],
     "ID13936.amt": [
         "ID13935.ama",
+        # Change the 4th texture of Oshino's name to not repeat
         (0x1160, 96),
         (0x1168, 128),
+    ],
+    "ID13984.amt": [
+        "ID13983.ama",
+        # Move the text close together
+        (0x9c0, 234),
+        (0xb10, 246),
     ],
 }
 backwards_pal = [
