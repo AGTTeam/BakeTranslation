@@ -122,6 +122,83 @@ def readAMT(file):
     return amt
 
 
+class AMAFile:
+    def __init__(self):
+        self.headersize = 0
+        self.unk1 = 0
+        self.unk2 = 0
+        self.unk3 = 0
+        self.start1 = 0
+        self.unk4 = 0
+        self.start2 = 0
+        self.start3 = 0
+        self.start4 = 0
+        self.unk5 = 0
+        self.unk6 = 0
+
+        self.size1 = 0
+        self.size2 = 0
+        self.size3 = 0
+        self.size4 = 0
+        self.datasize1 = 0
+        self.datasize2 = 0
+        self.datasize3 = 0
+        self.datasize4 = 0
+
+
+def readAMA(file):
+    with common.Stream(file, "rb") as f:
+        magic = f.readString(4)
+        if magic != "#AMA":
+            common.logError("Wrong magic", magic, "for file", file)
+            return None
+        ama = AMAFile()
+        ama.headersize = f.readUInt()
+        ama.unk1 = f.readUInt()
+        ama.unk2 = f.readUInt()
+        ama.unk3 = f.readUInt()
+        ama.start1 = f.readUInt()
+        ama.unk4 = f.readUInt()
+        ama.start2 = f.readUInt()
+        ama.start3 = f.readUInt()
+        ama.start4 = f.readUInt()
+        ama.unk5 = f.readUInt()
+        ama.unk6 = f.readUInt()
+        ama.size1 = (f.readUIntAt(ama.start1) - ama.start1) // 4
+        ama.size2 = (ama.start3 - ama.start2) // 4
+        ama.size3 = (ama.start4 - ama.start3) // 4
+        ama.size4 = (min(f.readUIntAt(ama.start2), f.readUIntAt(ama.start3), f.readUIntAt(ama.start4)) - ama.start4) // 4
+        ama.datasize1 = f.readUIntAt(ama.start1 + 4) - f.readUIntAt(ama.start1)
+        ama.datasize2 = f.readUIntAt(ama.start3) - f.readUIntAt(ama.start2)
+        ama.datasize3 = f.readUIntAt(ama.start4) - f.readUIntAt(ama.start3)
+        ama.datasize4 = f.readUIntAt(ama.start2 + 4) - f.readUIntAt(ama.start4)
+        common.logDebug(common.varsHex(ama))
+        readAMASection(f, 1, ama.start1, ama.size1, ama.datasize1)
+        readAMASection(f, 2, ama.start2, ama.size2, ama.datasize2)
+        readAMASection(f, 3, ama.start3, ama.size3, ama.datasize3)
+        readAMASection(f, 4, ama.start4, ama.size4, ama.datasize4)
+
+
+def readAMASection(f, n, start, size, datasize):
+    for i in range(size):
+        offset = f.readUIntAt(start + i * 4)
+        if offset == 0:
+            continue
+        common.logMessage("offset" + str(n), common.toHex(offset), "at", common.toHex(start + i * 4))
+        f.seek(offset)
+        readAMAValues(f, datasize // 4)
+    common.logMessage("Finished reading section", n, "at", common.toHex(f.tell()))
+
+
+def readAMAValues(f, num):
+    for i in range(num):
+        floatval = f.readFloat()
+        f.seek(-4, 1)
+        intval = f.readInt()
+        common.logMessage(" ", common.toHex(f.tell() - 4), floatval, intval, common.toHex(intval))
+
+
+
 def extract(data):
     infolder = data + "extract_CPK/rom/"
     outfolder = data + "out_IMG/"

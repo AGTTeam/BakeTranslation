@@ -12,6 +12,7 @@ strfiles = [
 files = {
     "ID13756.amt": [
         "ID13755.ama",
+        # Increase texture height from 48 to 64
         (0x25c, 64),
         (0x39c, 64),
         (0x46c, 64),
@@ -27,6 +28,11 @@ files = {
         (0x49c, 32),
         (0x564, -32),
         (0x56c, 32),
+        # Move the one at the bottom of the screen up 8 pixels
+        (0x1d4, 205),
+        (0x1f4, 205),
+        # Move the centered one down 10 pixels
+        (0x404, 140),
     ],
 }
 backwards_pal = [

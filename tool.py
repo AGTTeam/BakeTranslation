@@ -154,13 +154,8 @@ def translatevert(text):
 @common.cli.command()
 @click.argument("file")
 def ama(file):
-    file = cpkout + "rom/" + file
-    filesize = os.path.getsize(file)
-    with common.Stream(file, "rb") as f:
-        while f.tell() < filesize:
-            float = f.readFloat()
-            f.seek(-4, 1)
-            common.logMessage(common.toHex(f.tell()), float, f.readInt())
+    import format_img
+    format_img.readAMA(cpkout + "rom/" + file)
 
 
 @common.cli.command()
