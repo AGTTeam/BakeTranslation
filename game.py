@@ -43,7 +43,7 @@ files = {
     "ID13984.amt": [
         "ID13983.ama",
         # Move the text close together
-        (0x9c0, 234),
+        (0x9c0, 230),
         (0xb10, 246),
     ],
 }
