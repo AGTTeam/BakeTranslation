@@ -49,10 +49,10 @@ files = {
     "ID13734.amt": [
         "ID13733.ama",
         # Move the first half to the right, there are 2 positions since it's animated
-        (0xb60, 353),  # 353
-        (0xb80, 323),  # 323
-        (0xe10, 107),  # 107
-        (0xe30, 70),   # 70
+        (0xb60, 364),  # 353
+        (0xb80, 334),  # 323
+        (0xe10, 120),  # 107
+        (0xe30, 83),   # 70
         # Move the second half to the left
         (0xca0, 415),  # 415
         (0xcc0, 410),  # 410
