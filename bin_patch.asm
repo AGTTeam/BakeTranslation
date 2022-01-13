@@ -196,6 +196,15 @@
   ;lui v0,0x41a0
   lui v0,0x4140
 
+;Don't use installed data, always return 0 from the function that checks for it
+.org 0x08807438
+  j 0x08807470
+  nop
+;Do not prompt to install data on new game
+.org 0x088232c4
+  ;li a1,0xa
+  li a1,0xb
+
 ;Set the language to 1 (English) and buttonSwap to 1 (X) for syscalls
 ;sceImposeSetLanguageMode
 .org 0x0880706c
