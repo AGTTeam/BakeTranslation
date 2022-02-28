@@ -27,7 +27,7 @@ def extract(data, writeid=False):
 def repack(data):
     infolder = data + "extract_CPK/rom/"
     outfolder = data + "repack_CPK/rom/"
-    # fontconfig = "data/fontconfig.txt"
+    fontconfig = data + "fontconfig_input.txt"
     infile = data + "str_input.txt"
     chartot = transtot = 0
 
@@ -35,8 +35,7 @@ def repack(data):
         common.logError("Input file", infile, "not found")
         return
 
-    # glyphs = game.readFontGlyphs(fontconfig)
-
+    glyphs = game.readFontGlyphs(fontconfig)
     common.logMessage("Repacking STR from", infile, "...")
     common.makeFolders(outfolder)
     with codecs.open(infile, "r", "utf-8") as input:
@@ -58,11 +57,11 @@ def repack(data):
                         newutf = ""
                         if check in section:
                             newutf = section[check].pop(0)
-                            # common.logMessage(newutf)
                             if len(section[check]) == 0:
                                 del section[check]
                         if newutf != "":
-                            # newutf = common.wordwrap(newutf, glyphs, game.wordwrap)
+                            if file in game.wordwrapfiles:
+                                newutf = common.wordwrap(newutf, glyphs, game.wordwrap, default=16)
                             game.writeString(f, newutf)
                         else:
                             game.writeString(f, check)

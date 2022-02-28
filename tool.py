@@ -1,10 +1,9 @@
-import codecs
-import json
 import os
 import click
+import game
 from hacktools import common, cpk, psp
 
-version = "0.6.2"
+version = "0.7.0"
 data = "BakeData/"
 isofile = data + "bake.iso"
 isopatch = data + "bake_patched.iso"
@@ -156,6 +155,17 @@ def translatevert(text):
 def ama(file):
     import format_img
     format_img.readAMA(cpkout + "rom/" + file)
+
+
+@common.cli.command()
+@click.argument("text")
+def length(text):
+    glyphs = game.readFontGlyphs(data + "fontconfig_input.txt")
+    lookup = dict((c, glyphs[c].length if c in glyphs else 16) for c in set(text))
+    ret = 0
+    for c in text:
+        ret += lookup[c]
+    common.logMessage(ret)
 
 
 @common.cli.command()

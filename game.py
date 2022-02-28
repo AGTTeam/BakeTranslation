@@ -1,11 +1,18 @@
-import math
-from hacktools import common, psp
+import codecs
+import json
+from hacktools import common
+
 
 strfiles = [
     "ID08373.bin", "ID08374.bin", "ID08375.bin", "ID08376.bin",
     "ID14266.bin", "ID14267.bin", "ID14268.bin", "ID14269.bin",
     "ID14270.bin", "ID14271.bin", "ID14272.bin", "ID14273.bin", "ID14274.bin", "ID14275.bin", "ID14276.bin", "ID14277.bin", "ID14278.bin",
 ]
+wordwrapfiles = [
+    "ID14268.bin", "ID14269.bin",
+    "ID14270.bin", "ID14271.bin", "ID14272.bin", "ID14273.bin", "ID14274.bin", "ID14275.bin", "ID14276.bin", "ID14277.bin", "ID14278.bin",
+]
+wordwrap = 390
 
 # This is a list of AMT files that need their AMA file tweaked in order to fit the translation
 # The first element is the corresponding AMA file, and everything else is offset and float to write
@@ -105,3 +112,14 @@ def writeString(f, s):
     if f.tell() % 4 > 0:
         f.writeZero(4 - (f.tell() % 4))
     f.writeUIntAt(lenoffset, f.tell() - lenoffset - 4)
+
+
+def readFontGlyphs(file):
+    glyphs = {}
+    with codecs.open(file, "r", "utf-8") as f:
+        section = common.getSection(f, "", "##")
+    for c in section:
+        jsondata = json.loads(section[c][0])
+        charlen = float(jsondata["advance"]["x"]) * 0.85
+        glyphs[c] = common.FontGlyph(0, charlen, charlen)
+    return glyphs
