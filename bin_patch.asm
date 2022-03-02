@@ -110,7 +110,175 @@
   lw ra,0x0(sp)
   jr ra
   addiu sp,sp,0x10
+
+  GET_CHAR_LEN:
+  addiu sp,sp,-0x50
+  sw ra,0x0(sp)
+  sw a0,0x4(sp)
+  sw a1,0x8(sp)
+  sw a2,0xc(sp)
+  li a0,0x09d79ecc
+  ;Call sceFontGetCharInfo(SceFontHandle fontHandle, unsigned int charCode, SceFontCharInfo *charInfo[0x3c])
+  move a1,a3
+  jal 0x0894fbd8
+  addiu a2,sp,0x10
+  ;advancex is in charInfo[0x34]
+  addiu a0,sp,0x10
+  lw v0,0x34(a0)
+  li.s f13,64.0
+  mtc1 v0,f12
+  cvt.s.w f12,f12
+  div.s f12,f12,f13
+  lw ra,0x0(sp)
+  lw a0,0x4(sp)
+  lw a1,0x8(sp)
+  lw a2,0xc(sp)
+  jr ra
+  addiu sp,sp,0x50
+
+  ;Center wordwrapped lines
+  ;a1 = string ptr
+  CENTER_WORDWRAP:
+  ;Setup stack
+  addiu sp,sp,-0x140
+  sw a0,0x0(sp)
+  sw a1,0x4(sp)
+  sw a2,0x8(sp)
+  sw a3,0xc(sp)
+  sw s0,0x10(sp)
+  sw s1,0x14(sp)
+  sw s2,0x18(sp)
+  swc1 f10,0x1c(sp)
+  swc1 f11,0x20(sp)
+  swc1 f12,0x24(sp)
+  swc1 f13,0x28(sp)
+  ;Calculate the length for all the lines
+  ;a0 = current str ptr
+  ;a3 = current character
+  ;s0 = line length ptr
+  ;f10 = current length
+  ;f11 = max length
+  move a0,a1
+  move a2,zero
+  mtc1 a2,f10
+  cvt.s.w f10,f10
+  mov.s f11,f10
+  addiu s0,sp,0x30
+  lw zero,0x0(s0)
+  lw zero,0x4(s0)
+  lw zero,0x8(s0)
+  lw zero,0xc(s0)
+  ;Load one character, check for line breaks and 0
+  @@loop:
+  lhu a3,0x0(a0)
+  beq a3,0xa,@@linebreak
+  addiu a0,a0,0x2
+  beq a3,0x0,@@center
+  nop
+  jal GET_CHAR_LEN
+  nop
+  j @@loop
+  add.s f10,f10,f12
+  ;Set f11 if the length is more than the max, store it in s0 and move on
+  @@linebreak:
+  c.lt.s f10,f11
+  bc1t @@linebreaksmall
+  nop
+  mov.s f11,f10
+  @@linebreaksmall:
+  swc1 f10,0x0(s0)
+  move a2,zero
+  mtc1 a2,f10
+  cvt.s.w f10,f10
+  j @@loop
+  addiu s0,s0,0x4
+  ;Finished calculating all the lengths, check the last length with max
+  @@center:
+  c.lt.s f10,f11
+  bc1t @@centersmall
+  nop
+  mov.s f11,f10
+  @@centersmall:
+  swc1 f10,0x0(s0)
+  addiu s0,sp,0x30
+  addiu a0,sp,0x40
+  lwc1 f10,0x0(s0)
+  ;Registers setup
+  ;a0 = new str
+  ;a1 = original str
+  ;s0 = line length ptr
+  ;f10 = current length
+  ;f11 = max length
+  ;s2 = number of padding characters added
+  c.seq.s f10,f11
+  bc1t @@copyloop
+  move s2,zero
+  @@padline:
+  ;Pad the line, length is in a2
+  ;Length to pad = (f11 - f10) / 2
+  sub.s f10,f11,f10
+  li.s f12,2.0
+  div.s f10,f10,f12
+  li.s f12,6.96875*2.15
+  div.s f10,f10,f12
+  cvt.w.s f10,f10
+  mfc1 a2,f10
+  li a3,0x20
+  @@padloop:
+  ble a2,0x0,@@copyloop
+  addiu s2,s2,0x1
+  sh a3,0x0(a0)
+  addiu a0,a0,0x2
+  j @@padloop
+  addi a2,a2,-0x1
+  @@copyloop:
+  lhu a3,0x0(a1)
+  addiu a1,a1,0x2
+  sh a3,0x0(a0)
+  beq a3,0x0,@@copyover
+  addiu a0,a0,0x2
+  beq a3,0xa,@@copybreak
+  nop
+  j @@copyloop
+  nop
+  ;On line break, check the next string length
+  @@copybreak:
+  addiu s0,s0,0x4
+  lwc1 f10,0x0(s0)
+  c.seq.s f10,f11
+  bc1t @@copyloop
+  nop
+  j @@padline
+  nop
+  @@copyover:
+  addiu a1,sp,0x40
+  @@return:
+  ;Original instructions
+  lw a0,0x0(sp)
+  lw a2,0x8(sp)
+  lw a3,0xc(sp)
+  lw s0,0x10(sp)
+  lw s1,0x14(sp)
+  addu a2,a2,s2
+  lw s2,0x18(sp)
+  lwc1 f10,0x1c(sp)
+  lwc1 f11,0x20(sp)
+  lwc1 f12,0x24(sp)
+  lwc1 f13,0x28(sp)
+  addiu a2,a2,0x1
+  jal 0x088269d8
+  move t0,s2
+  ;Restore stack and return
+  lw a1,0x4(sp)
+  j CENTER_WORDWRAP_RETURN
+  addiu sp,sp,0x140
   .endarea
+
+;Center wordwrapped lines
+.org 0x08826668
+  jal CENTER_WORDWRAP
+  .skip 12
+  CENTER_WORDWRAP_RETURN:
 
 ;Handle vertical text VWF
 .org 0x088e4da8
@@ -150,7 +318,7 @@
 
 ;Use short character names in the menu
 ;Original:
-;4F: 阿良々木暦
+;4f: 阿良々木暦
 ;50: 戦場ヶ原ひたぎ
 ;51: 八九寺真宵
 ;54: 神原駿河
