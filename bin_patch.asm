@@ -42,12 +42,24 @@
   lw a1,0x24(a2)
   bne a1,0x1,@@ret
   andi a0,a0,0xffff
+  ;Return an hardcoded value for some characters
+  beql a0,0x20,@@ret
+  li a0,0x3005
+  beql a0,0x2015,@@ret  ; ―
+  li a0,0x30af
+  beql a0,0x2018,@@ret  ; ‘
+  li a0,0x30b0
+  beql a0,0x2019,@@ret  ; ’
+  li a0,0x30b1
+  beql a0,0x201c,@@ret  ; “
+  li a0,0x30b2
+  beql a0,0x201d,@@ret  ; ”
+  li a0,0x30b3
+  beql a0,0x2026,@@ret  ; …
+  li a0,0x30ae
   ;Return if the character is > 0x7e
   bgt a0,0x7e,@@ret
   nop
-  ;Return an hardcoded value for the space
-  beql a0,0x20,@@ret
-  li a0,0x3005
   ;Add 0x3020 to the character code and tweak it for charcode gaps
   blt a0,0x70,@@done
   addiu a1,a0,0x3020
@@ -112,19 +124,25 @@
   addiu sp,sp,0x10
 
   GET_CHAR_LEN:
-  addiu sp,sp,-0x50
+  addiu sp,sp,-0x60
   sw ra,0x0(sp)
   sw a0,0x4(sp)
   sw a1,0x8(sp)
   sw a2,0xc(sp)
+  sw t0,0x10(sp)
   li a0,0x09d79ecc
   ;Call sceFontGetCharInfo(SceFontHandle fontHandle, unsigned int charCode, SceFontCharInfo *charInfo[0x3c])
   move a1,a3
   jal 0x0894fbd8
-  addiu a2,sp,0x10
+  addiu a2,sp,0x20
+  lw t0,0x10(sp)
   ;advancex is in charInfo[0x34]
-  addiu a0,sp,0x10
+  addiu a0,sp,0x20
   lw v0,0x34(a0)
+  beq t0,zero,@@advancepos
+  nop
+  lw v0,0x30(a0)
+  @@advancepos:
   li.s f13,64.0
   mtc1 v0,f12
   cvt.s.w f12,f12
@@ -134,7 +152,7 @@
   lw a1,0x8(sp)
   lw a2,0xc(sp)
   jr ra
-  addiu sp,sp,0x50
+  addiu sp,sp,0x60
 
   ;Center wordwrapped lines
   ;a1 = string ptr
@@ -160,6 +178,7 @@
   ;f11 = max length
   move a0,a1
   move a2,zero
+  move t0,zero
   mtc1 a2,f10
   cvt.s.w f10,f10
   mov.s f11,f10
@@ -274,11 +293,78 @@
   addiu sp,sp,0x140
   .endarea
 
+;This function has a list of harcoded characters that are offset
+;when rendering them vertically, we just don't care about this
+;Use the space after to inject some more code
+.org 0x088266bc
+  .area 0x318
+  jr ra
+  li v0,0x0
+
+  ;Cut text off taking VWF into account
+  ;Originally text is cut off at 0x17 (horizontal) or 0xe (vertical) length
+  ;s1 = str ptr (actually a copy, but this is what will be used and cut off)
+  ;a1 = max amount of characters
+  ;s2 = 1 for shorter text
+  CUTOFF_TEXT:
+  addiu sp,sp,-0x20
+  swc1 f10,0x0(sp)
+  swc1 f11,0x4(sp)
+  swc1 f12,0x8(sp)
+  swc1 f13,0xc(sp)
+  sw s1,0x10(sp)
+  sw a3,0x14(sp)
+  sw t0,0x18(sp)
+  li t0,0x1
+  li.s f10,0.0
+  li.s f11,480.0
+  ;Don't use the delay slot here since li.s assembles to 2 instructions
+  beq s2,zero,@@nothorizontal
+  nop
+  li.s f11,275.0
+  @@nothorizontal:
+  @@loop:
+  lhu a3,0x0(s1)
+  beq a3,0xa,@@linebreak
+  addiu s1,s1,0x2
+  beq a3,0x0,@@return
+  nop
+  jal GET_CHAR_LEN
+  addiu a1,a1,0x1
+  add.s f10,f10,f12
+  c.lt.s f10,f11
+  bc1t @@loop
+  nop
+  j @@return
+  subiu a1,a1,0x1
+  @@linebreak:
+  j @@loop
+  addiu a1,a1,0x1
+  @@return:
+  lwc1 f10,0x0(sp)
+  lwc1 f11,0x4(sp)
+  lwc1 f12,0x8(sp)
+  lwc1 f13,0xc(sp)
+  lw s1,0x10(sp)
+  lw a3,0x14(sp)
+  lw t0,0x18(sp)
+  sw a0,0x354(s0)
+  j CUTOFF_TEXT_RETURN
+  addiu sp,sp,0x20
+  .endarea
+
 ;Center wordwrapped lines
 .org 0x08826668
   jal CENTER_WORDWRAP
   .skip 12
   CENTER_WORDWRAP_RETURN:
+
+;Cut off text taking VWF into account
+.org 0x08826460
+  j CUTOFF_TEXT
+  li a1,0x1
+  .skip 8
+  CUTOFF_TEXT_RETURN:
 
 ;Handle vertical text VWF
 .org 0x088e4da8
@@ -294,12 +380,6 @@
   j CONVERT_VERTICAL
   move s0,a1
   CONVERT_VERTICAL_RET:
-
-;This function has a list of harcoded characters that are offset
-;when rendering them vertically, we just don't care about this
-.org 0x088266bc
-  jr ra
-  li v0,0x0
 
 ;Swap date order for save games
 .org 0x088094a0

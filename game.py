@@ -95,11 +95,11 @@ def readString(f, length):
             ret += "|"
         elif charcode != 0:
             ret += chr(charcode)
-    return ret.replace("</icon=", "</icon")
+    return ret.replace("</icon=", "</icon").replace("</dot=", "</dot").replace("<color=", "<color").replace("<scale=", "<scale")
 
 
 def writeString(f, s):
-    s = s.replace("</icon", "</icon=")
+    s = s.replace("</icon", "</icon=").replace("</dot", "</dot=").replace("<color", "<color=").replace("<scale", "<scale=")
     lenoffset = f.tell()
     f.writeUInt(0)
     for c in s:
