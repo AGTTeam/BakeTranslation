@@ -323,7 +323,7 @@
   ;Don't use the delay slot here since li.s assembles to 2 instructions
   beq s2,zero,@@loop
   nop
-  li.s f11,310.0
+  li.s f11,309.0
   @@loop:
   lhu a3,0x0(s1)
   beq a3,0xa,@@linebreak
