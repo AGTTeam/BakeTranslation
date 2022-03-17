@@ -305,7 +305,7 @@
   ;Originally text is cut off at 0x17 (horizontal) or 0xe (vertical) length
   ;s1 = str ptr (actually a copy, but this is what will be used and cut off)
   ;a1 = max amount of characters
-  ;s2 = 1 for shorter text
+  ;s2 = 1 for shorter text (vertical)
   CUTOFF_TEXT:
   addiu sp,sp,-0x20
   swc1 f10,0x0(sp)
@@ -313,22 +313,27 @@
   swc1 f12,0x8(sp)
   swc1 f13,0xc(sp)
   sw s1,0x10(sp)
-  sw a3,0x14(sp)
-  sw t0,0x18(sp)
+  sw a2,0x14(sp)
+  sw a3,0x18(sp)
+  sw t0,0x1c(sp)
+  li a2,0x0
   li t0,0x1
   li.s f10,0.0
   li.s f11,480.0
   ;Don't use the delay slot here since li.s assembles to 2 instructions
-  beq s2,zero,@@nothorizontal
+  beq s2,zero,@@loop
   nop
   li.s f11,275.0
-  @@nothorizontal:
   @@loop:
   lhu a3,0x0(s1)
   beq a3,0xa,@@linebreak
   addiu s1,s1,0x2
-  beq a3,0x0,@@return
-  nop
+  beql a3,0x0,@@return
+  move a2,a1
+  @@check:
+  beql a3,0x20,@@getlen
+  move a2,a1
+  @@getlen:
   jal GET_CHAR_LEN
   addiu a1,a1,0x1
   add.s f10,f10,f12
@@ -338,19 +343,58 @@
   j @@return
   subiu a1,a1,0x1
   @@linebreak:
-  j @@loop
-  addiu a1,a1,0x1
+  ;Replace with space
+  li a3,0x20
+  sh a3,-0x2(s1)
+  j @@check
+  nop
   @@return:
+  move a1,a2
   lwc1 f10,0x0(sp)
   lwc1 f11,0x4(sp)
   lwc1 f12,0x8(sp)
   lwc1 f13,0xc(sp)
   lw s1,0x10(sp)
-  lw a3,0x14(sp)
-  lw t0,0x18(sp)
+  lw a2,0x14(sp)
+  lw a3,0x18(sp)
+  lw t0,0x1c(sp)
   sw a0,0x354(s0)
   j CUTOFF_TEXT_RETURN
   addiu sp,sp,0x20
+
+  LB_TO_SPACE:
+  li t3,0x20
+  @@loop:
+  lhu t2,0x0(s1)
+  addiu s1,s1,0x2
+  beq t2,zero,@@return
+  nop
+  bne t2,0xa,@@loop
+  nop
+  j @@loop
+  sh t3,-0x2(s1)
+  @@return:
+  lw s1,0x350(s0)
+  li t2,0x0
+  j LB_TO_SPACE_RETURN
+  li t3,-0x1
+
+  LB_TO_SPACE_LONG:
+  li a0,0x20
+  @@loop:
+  lhu a3,0x0(a1)
+  addiu a1,a1,0x2
+  beq a3,zero,@@return
+  nop
+  bne a3,0xa,@@loop
+  nop
+  j @@loop
+  sh a0,-0x2(a1)
+  @@return:
+  lw a1,0x24(s0)
+  li a3,0x0
+  j LB_TO_SPACE_LONG_RETURN
+  move a0,s0
   .endarea
 
 ;Center wordwrapped lines
@@ -365,6 +409,16 @@
   li a1,0x1
   .skip 8
   CUTOFF_TEXT_RETURN:
+
+;Change line breaks to spaces for glossary lines
+.org 0x088263fc
+  j LB_TO_SPACE
+  .skip 4
+  LB_TO_SPACE_RETURN:
+.org 0x08826534
+  ;j LB_TO_SPACE_LONG
+  .skip 4
+  LB_TO_SPACE_LONG_RETURN:
 
 ;Handle vertical text VWF
 .org 0x088e4da8
