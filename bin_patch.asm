@@ -484,6 +484,8 @@
 ;Use short character names in menu headers
 .org 0x088af798
   jal GET_SHORT_CHAR_NAME3 - 0x8804000
+.org 0x088c4d2c
+  jal GET_SHORT_CHAR_NAME2 - 0x8804000
 
 ;Repeat sprintf parameter for these two strings:
 ;"%sの「中敵」語録が開放されました。|フリー対戦モード限定のＣＯＭ専用語録です。|より強力なＣＯＭと会話劇ができます。"
