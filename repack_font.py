@@ -3,6 +3,7 @@ import json
 import os
 from hacktools import common, psp
 
+
 specialchars = {
     0x2015: 0x30af,  # ―
     0x2018: 0x30b0,  # ‘
@@ -50,6 +51,8 @@ def run(data):
                 if ord(char) >= 0x72:
                     charcode += 13
                 newchar = chr(charcode)
+            if "vertwidth" in glyph:
+                glyph["width"] = glyph["vertwidth"]
             fontdata = json.dumps(glyph)
             f.write("#" + char + "\n" + newchar + "=" + fontdata + "\n")
     psp.repackPGFData(fontin, fontout, fontconftemp, fontbmpin)
