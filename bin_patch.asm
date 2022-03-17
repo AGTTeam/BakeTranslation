@@ -319,11 +319,11 @@
   li a2,0x0
   li t0,0x1
   li.s f10,0.0
-  li.s f11,480.0
+  li.s f11,490.0
   ;Don't use the delay slot here since li.s assembles to 2 instructions
   beq s2,zero,@@loop
   nop
-  li.s f11,275.0
+  li.s f11,310.0
   @@loop:
   lhu a3,0x0(s1)
   beq a3,0xa,@@linebreak
