@@ -3,7 +3,7 @@ import click
 import game
 from hacktools import common, cpk, psp
 
-version = "0.9.0"
+version = "0.9.1"
 data = "BakeData/"
 isofile = data + "bake.iso"
 isopatch = data + "bake_patched.iso"

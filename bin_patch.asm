@@ -379,22 +379,59 @@
   j LB_TO_SPACE_RETURN
   li t3,-0x1
 
+  REPLACE_LB:
+  .dw 0
+
+  SET_REPLACE_LB:
+  li a1,0x1
+  li a3,REPLACE_LB
+  sw a1,0x0(a3)
+  li a1,0x0
+  j SET_REPLACE_LB_RETURN
+  li a3,0x0
+
+  ;If REPLACE_LB is set, copy a2 bytes from a1 to a0
+  ;s4 = result from wcslen
   LB_TO_SPACE_LONG:
-  li a0,0x20
+  sw v0,0x24(s0)
+  li a1,REPLACE_LB
+  lw a0,0x0(a1)
+  beq a0,zero,@@retnormal
+  nop
+  sw zero,0x0(a1)
+  addiu sp,sp,-0x10
+  move a0,v0
+  move a1,s3
+  sw a0,0x0(sp)
+  sw a1,0x4(sp)
+  sw a2,0x8(sp)
+  sw a3,0xc(sp)
   @@loop:
   lhu a3,0x0(a1)
+  addiu a2,a2,-0x1
+  sh a3,0x0(a0)
+  beq a3,0x0,@@return
   addiu a1,a1,0x2
-  beq a3,zero,@@return
-  nop
+  beq a2,0x0,@@return
+  addiu a0,a0,0x2
   bne a3,0xa,@@loop
-  nop
+  li a3,0x20
+  sw a3,0x0(a0)
+  addiu s4,s4,0x1
+  sw s4,0x28(s0)
   j @@loop
-  sh a0,-0x2(a1)
+  addiu a0,a0,0x2
   @@return:
-  lw a1,0x24(s0)
-  li a3,0x0
+  lw a0,0x0(sp)
+  lw a1,0x4(sp)
+  lw a2,0x8(sp)
+  lw a3,0xc(sp)
   j LB_TO_SPACE_LONG_RETURN
-  move a0,s0
+  addiu sp,sp,0x10
+  @@retnormal:
+  move a0,v0
+  j LB_TO_SPACE_LONG_RETURN_NORMAL
+  move a1,s3
   .endarea
 
 ;Center wordwrapped lines
@@ -415,10 +452,21 @@
   j LB_TO_SPACE
   .skip 4
   LB_TO_SPACE_RETURN:
-.org 0x08826534
-  ;j LB_TO_SPACE_LONG
+.org 0x088b41f0
+  j SET_REPLACE_LB
   .skip 4
+  SET_REPLACE_LB_RETURN:
+.org 0x0882651c
+  j LB_TO_SPACE_LONG
+  .skip 4
+  LB_TO_SPACE_LONG_RETURN_NORMAL:
+  .skip 8
   LB_TO_SPACE_LONG_RETURN:
+
+;Make some more space for the allocation to replace line breaks with line break+space
+.org 0x08826504
+  ;addiu a0,s4,0x1
+  addiu a0,s4,0x2
 
 ;Handle vertical text VWF
 .org 0x088e4da8
