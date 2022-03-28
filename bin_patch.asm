@@ -532,6 +532,14 @@
 ;Use short character names in menu headers
 .org 0x088af798
   jal GET_SHORT_CHAR_NAME3 - 0x8804000
+.org 0x088b2fec
+  jal GET_SHORT_CHAR_NAME3 - 0x8804000
+.org 0x088b3a64
+  jal GET_SHORT_CHAR_NAME3 - 0x8804000
+.org 0x088ae02c
+  jal GET_SHORT_CHAR_NAME3 - 0x8804000
+.org 0x088b1128
+  jal GET_SHORT_CHAR_NAME3 - 0x8804000
 .org 0x088c4d2c
   jal GET_SHORT_CHAR_NAME2 - 0x8804000
 
