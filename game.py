@@ -79,6 +79,30 @@ files = {
         (0x2c80, 200),  # 150
         (0x2d50, 200),  # 150
     ],
+    "ID13830.amt": [
+        "ID13829.ama",
+        # Move the text close together
+        (0xdf0, 206),  # 180
+        (0xff0, 274),  # 300
+    ],
+    "ID13832.amt": [
+        "ID13831.ama",
+        # Move the text close together
+        (0x240, 224),  # 210
+        (0x340, 256),  # 270
+    ],
+    "ID13934.amt": [
+        "ID13933.ama",
+        # Move the text close together
+        (0x410, 216),  # 200
+        (0x560, 264),  # 280
+        (0x680, 216),  # 200
+        (0x7a0, 264),  # 280
+        (0xbc0, 206),  # 190
+        (0xd10, 274),  # 290
+        (0xe30, 206),  # 190
+        (0xf50, 274),  # 290
+    ],
 }
 backwards_pal = [
     "ID14154.amt",

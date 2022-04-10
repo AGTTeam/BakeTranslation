@@ -59,7 +59,8 @@ def extract(iso, cpkparam, strparam, img, font):
 @click.option("--img", is_flag=True, default=False)
 @click.option("--bin", is_flag=True, default=False)
 @click.option("--font", is_flag=True, default=False)
-def repack(no_iso, cpkparam, strparam, mov, img, bin, font):
+@click.option("--cmp", is_flag=True, default=False)
+def repack(no_iso, cpkparam, strparam, mov, img, bin, font, cmp):
     all = not cpkparam and not strparam and not mov and not img and not bin and not font
     if all or font:
         import repack_font
@@ -79,7 +80,7 @@ def repack(no_iso, cpkparam, strparam, mov, img, bin, font):
     if all or cpkparam or strparam or mov or img:
         common.logMessage("Repacking CPK ...")
         common.mergeFolder(replacecpkfolder, data + "repack_CPK/rom/")
-        cpk.repack(cpkin + "rom.cpk", cpkin.replace("extract", "repack") + "rom.cpk", cpkout + "rom/", data + "repack_CPK/rom/")
+        cpk.repack(cpkin + "rom.cpk", cpkin.replace("extract", "repack") + "rom.cpk", cpkout + "rom/", data + "repack_CPK/rom/", cmp)
         common.logMessage("Done!")
     if all or cpkparam or mov:
         common.logMessage("Repacking Movies CPK ...")
