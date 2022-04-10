@@ -80,7 +80,7 @@ def repack(no_iso, cpkparam, strparam, mov, img, bin, font, cmp):
     if all or cpkparam or strparam or mov or img:
         common.logMessage("Repacking CPK ...")
         common.mergeFolder(replacecpkfolder, data + "repack_CPK/rom/")
-        cpk.repack(cpkin + "rom.cpk", cpkin.replace("extract", "repack") + "rom.cpk", cpkout + "rom/", data + "repack_CPK/rom/", cmp)
+        cpk.repack(cpkin + "rom.cpk", cpkin.replace("extract", "repack") + "rom.cpk", cpkout + "rom/", data + "repack_CPK/rom/")
         common.logMessage("Done!")
     if all or cpkparam or mov:
         common.logMessage("Repacking Movies CPK ...")
