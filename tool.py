@@ -3,7 +3,7 @@ import click
 import game
 from hacktools import common, cpk, psp
 
-version = "0.9.1"
+version = "0.9.2"
 data = "BakeData/"
 isofile = data + "bake.iso"
 isopatch = data + "bake_patched.iso"
@@ -80,7 +80,7 @@ def repack(no_iso, cpkparam, strparam, mov, img, bin, font, cmp):
     if all or cpkparam or strparam or mov or img:
         common.logMessage("Repacking CPK ...")
         common.mergeFolder(replacecpkfolder, data + "repack_CPK/rom/")
-        cpk.repack(cpkin + "rom.cpk", cpkin.replace("extract", "repack") + "rom.cpk", cpkout + "rom/", data + "repack_CPK/rom/")
+        cpk.repack(cpkin + "rom.cpk", cpkin.replace("extract", "repack") + "rom.cpk", cpkout + "rom/", data + "repack_CPK/rom/", cmp)
         common.logMessage("Done!")
     if all or cpkparam or mov:
         common.logMessage("Repacking Movies CPK ...")
