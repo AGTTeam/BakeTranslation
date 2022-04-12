@@ -40,6 +40,7 @@ files = {
         (0x1f4, 205),
         # Move the centered one down 10 pixels
         (0x404, 140),
+        (0x4d4, 140),
     ],
     "ID13936.amt": [
         "ID13935.ama",
