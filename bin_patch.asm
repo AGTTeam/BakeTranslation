@@ -158,7 +158,7 @@
   ;a1 = string ptr
   CENTER_WORDWRAP:
   ;Setup stack
-  addiu sp,sp,-0x140
+  addiu sp,sp,-0x180
   sw a0,0x0(sp)
   sw a1,0x4(sp)
   sw a2,0x8(sp)
@@ -238,11 +238,11 @@
   sub.s f10,f11,f10
   li.s f12,2.0
   div.s f10,f10,f12
-  li.s f12,6.96875*2.15
+  li.s f12,11.0
   div.s f10,f10,f12
   cvt.w.s f10,f10
   mfc1 a2,f10
-  li a3,0x20
+  li a3,0x7b
   @@padloop:
   ble a2,0x0,@@copyloop
   addiu s2,s2,0x1
@@ -290,7 +290,7 @@
   ;Restore stack and return
   lw a1,0x4(sp)
   j CENTER_WORDWRAP_RETURN
-  addiu sp,sp,0x140
+  addiu sp,sp,0x180
   .endarea
 
 ;This function has a list of harcoded characters that are offset
