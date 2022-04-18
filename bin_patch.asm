@@ -178,15 +178,11 @@
   ;f11 = max length
   move a0,a1
   move a2,zero
-  move t0,zero
+  li t0,0x1
   mtc1 a2,f10
   cvt.s.w f10,f10
   mov.s f11,f10
   addiu s0,sp,0x30
-  lw zero,0x0(s0)
-  lw zero,0x4(s0)
-  lw zero,0x8(s0)
-  lw zero,0xc(s0)
   ;Load one character, check for line breaks and 0
   @@loop:
   lhu a3,0x0(a0)
@@ -238,7 +234,7 @@
   sub.s f10,f11,f10
   li.s f12,2.0
   div.s f10,f10,f12
-  li.s f12,11.0
+  li.s f12,4.84375
   div.s f10,f10,f12
   cvt.w.s f10,f10
   mfc1 a2,f10
