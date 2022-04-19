@@ -489,6 +489,15 @@
 .org 0x088cd2d4
   move a2,s1
   move a3,s3
+.org 0x088cd33c
+  move a2,s1
+  move a3,s3
+.org 0x088cd3a4
+  move a2,s1
+  move a3,s3
+.org 0x088cd408
+  move a2,s1
+  move a3,s3
 
 ;Add more space for the "Glossary n" lines
 .org 0x0881da9c
