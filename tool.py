@@ -223,4 +223,7 @@ if __name__ == "__main__":
     if not os.path.isdir(data):
         common.logError(data, "folder not found.")
         quit()
+    if not os.path.isfile(isofile):
+        common.logError(isofile, "file not found.")
+        quit()
     common.runCLI(common.cli)
