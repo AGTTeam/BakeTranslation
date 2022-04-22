@@ -563,7 +563,7 @@
 ;Move Progress text
 .org 0x088bc2e4
   ;lui t3,0x43b4
-  lui t3,0x43a2
+  lui t3,0x43a0
 ;Move first progress number
 .org 0x088bbf64
   ;li a1,0x15c
