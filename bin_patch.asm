@@ -577,6 +577,32 @@
   ;swc1 f12,0x0(a0)
   nop
 
+;Move the hour number
+.org 0x088bbce8
+  ;lui a1,0x439a
+  lui a1,0x4396
+;Move the : and minute number
+.org 0x088bbd3c
+  ;lui a0,0x4396
+  lui a0,0x4394
+;Move (Hr:M) text
+.org 0x088bbe80
+  ;lui a0,0x4100
+  lui a0,0x3f00
+;NOTE: the stuff below runs at boot
+;Move wins/losses text
+.org 0x088bccb8
+  ;lui a1,0x43b8
+  lui a1,0x43b0
+;Move wins number
+.org 0x088bcccc
+  ;lui a1,0x43ab
+  lui a1,0x43a0
+;Move losses number
+.org 0x088bccdc
+  ;lui a1,0x43c2
+  lui a1,0x43ba
+
 ;Don't use installed data, always return 0 from the function that checks for it
 .org 0x08807438
   j 0x08807470
