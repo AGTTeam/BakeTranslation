@@ -319,7 +319,7 @@
   ;Don't use the delay slot here since li.s assembles to 2 instructions
   beq s2,zero,@@loop
   nop
-  li.s f11,309.0
+  li.s f11,308.0
   @@loop:
   lhu a3,0x0(s1)
   beq a3,0xa,@@linebreak
@@ -431,10 +431,10 @@
 
   LINES_POS_TWEAK:
   ;Move lines text (0x43d2)
-  lui a1,0x43c2
+  lui a1,0x43c6
   mtc1 a1,f14
   ;Move lines number (0x43be)
-  lui a1,0x43ae
+  lui a1,0x43b2
   mtc1 a1,f4
   j LINES_POS_TWEAK_RETURN
   addiu a1,a2,0x400
@@ -594,28 +594,28 @@
 ;Move the hour number
 .org 0x088bbce8
   ;lui a1,0x439a
-  lui a1,0x4396
+  lui a1,0x4393
 ;Move the : and minute number
 .org 0x088bbd3c
   ;lui a0,0x4396
-  lui a0,0x4394
+  lui a0,0x4391
 ;Move (Hr:M) text
 .org 0x088bbe80
   ;lui a0,0x4100
-  lui a0,0x3f00
+  lui a0,0x3e99
 ;NOTE: the stuff below runs at boot
 ;Move wins/losses text
 .org 0x088bccb8
   ;lui a1,0x43b8
-  lui a1,0x43b0
+  lui a1,0x43a8
 ;Move wins number
 .org 0x088bcccc
   ;lui a1,0x43ab
-  lui a1,0x43a0
+  lui a1,0x439b
 ;Move losses number
 .org 0x088bccdc
   ;lui a1,0x43c2
-  lui a1,0x43ba
+  lui a1,0x43b8
 ;Move lines number/text
 .org 0x088bd0d4
   ;addiu a1,a2,0x400
