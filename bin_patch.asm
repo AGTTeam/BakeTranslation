@@ -560,6 +560,22 @@
 .org 0x088bc20c
   ;lui v0,0x41a0
   lui v0,0x4140
+;Move Progress text
+.org 0x088bc2e4
+  ;lui t3,0x43b4
+  lui t3,0x43a2
+;Move first progress number
+.org 0x088bbf64
+  ;li a1,0x15c
+  li a1,0x16c
+;Move second progress number
+.org 0x088bbf7c
+  ;li a1,0x176
+  li a1,0x186
+;Don't overwrite the progress position every frame
+.org 0x088bbf4c
+  ;swc1 f12,0x0(a0)
+  nop
 
 ;Don't use installed data, always return 0 from the function that checks for it
 .org 0x08807438
