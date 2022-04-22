@@ -428,6 +428,16 @@
   move a0,v0
   j LB_TO_SPACE_LONG_RETURN_NORMAL
   move a1,s3
+
+  LINES_POS_TWEAK:
+  ;Move lines text (0x43d2)
+  lui a1,0x43c2
+  mtc1 a1,f14
+  ;Move lines number (0x43be)
+  lui a1,0x43ae
+  mtc1 a1,f4
+  j LINES_POS_TWEAK_RETURN
+  addiu a1,a2,0x400
   .endarea
 
 ;Center wordwrapped lines
@@ -577,6 +587,10 @@
   ;swc1 f12,0x0(a0)
   nop
 
+;Align "General" header
+.org 0x088b8828
+  ;lui a0,0x4260
+  lui a0,0x4270
 ;Move the hour number
 .org 0x088bbce8
   ;lui a1,0x439a
@@ -602,6 +616,12 @@
 .org 0x088bccdc
   ;lui a1,0x43c2
   lui a1,0x43ba
+;Move lines number/text
+.org 0x088bd0d4
+  ;addiu a1,a2,0x400
+  j LINES_POS_TWEAK
+  .skip 4
+  LINES_POS_TWEAK_RETURN:
 
 ;Don't use installed data, always return 0 from the function that checks for it
 .org 0x08807438
