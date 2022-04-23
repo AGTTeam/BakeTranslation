@@ -349,8 +349,11 @@
   j @@return
   subiu a1,a1,0x1
   @@linebreak:
-  ;Replace with space
+  ;Replace with space, or invisible character if it's the first one
   li a3,0x20
+  beql a2,zero,@@notfirst
+  li a3,0x7c
+  @@notfirst:
   sh a3,-0x2(s1)
   j @@check
   nop
@@ -369,14 +372,21 @@
   addiu sp,sp,0x20
 
   LB_TO_SPACE:
-  li t3,0x20
   @@loop:
+  li t3,0x20
   lhu t2,0x0(s1)
   addiu s1,s1,0x2
   beq t2,zero,@@return
   nop
   bne t2,0xa,@@loop
   nop
+  ;Check if it's the first character of the string
+  lw t2,0x350(s0)
+  addiu t2,t2,0x2
+  ;In that case, set the character to an invisible space
+  beql t2,s1,@@notfirst
+  li t3,0x7c
+  @@notfirst:
   j @@loop
   sh t3,-0x2(s1)
   @@return:
@@ -408,11 +418,13 @@
   addiu sp,sp,-0x10
   move a0,v0
   move a1,s3
+  li t8,-1
   sw a0,0x0(sp)
   sw a1,0x4(sp)
   sw a2,0x8(sp)
   sw a3,0xc(sp)
   @@loop:
+  addi t8,t8,0x1
   lhu a3,0x0(a1)
   addiu a2,a2,-0x1
   sh a3,0x0(a0)
@@ -422,6 +434,9 @@
   addiu a0,a0,0x2
   bne a3,0xa,@@loop
   li a3,0x20
+  beql t8,zero,@@notfirst
+  li a3,0x7c
+  @@notfirst:
   sw a3,0x0(a0)
   addiu s4,s4,0x1
   sw s4,0x28(s0)
