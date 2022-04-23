@@ -81,7 +81,7 @@ def repack(no_iso, cpkparam, strparam, lines, mov, img, bin, font, cmp):
     if all or img:
         import format_img
         format_img.repack(data)
-    if all or cpkparam or strparam or lines or mov or img:
+    if all or cpkparam or strparam or lines or mov or img or font:
         common.logMessage("Repacking CPK ...")
         common.mergeFolder(replacecpkfolder, data + "repack_CPK/rom/")
         cpk.repack(cpkin + "rom.cpk", cpkin.replace("extract", "repack") + "rom.cpk", cpkout + "rom/", data + "repack_CPK/rom/", cmp)
