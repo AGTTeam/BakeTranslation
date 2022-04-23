@@ -180,7 +180,6 @@
   move a2,zero
   li t0,0x1
   mtc1 a2,f10
-  cvt.s.w f10,f10
   mov.s f11,f10
   addiu s0,sp,0x30
   ;Load one character, check for line breaks and 0
@@ -204,7 +203,6 @@
   swc1 f10,0x0(s0)
   move a2,zero
   mtc1 a2,f10
-  cvt.s.w f10,f10
   j @@loop
   addiu s0,s0,0x4
   ;Finished calculating all the lengths, check the last length with max
@@ -287,6 +285,18 @@
   lw a1,0x4(sp)
   j CENTER_WORDWRAP_RETURN
   addiu sp,sp,0x180
+
+  LINES_POS_TWEAK:
+  mov.s f20,f4
+  mov.s f21,f14
+  ;Move lines text (0x43d2)
+  lui a1,0x43c6
+  mtc1 a1,f14
+  ;Move lines number (0x43be)
+  lui a1,0x43b2
+  mtc1 a1,f4
+  j LINES_POS_TWEAK_RETURN
+  addiu a1,a2,0x400
   .endarea
 
 ;This function has a list of harcoded characters that are offset
@@ -428,16 +438,6 @@
   move a0,v0
   j LB_TO_SPACE_LONG_RETURN_NORMAL
   move a1,s3
-
-  LINES_POS_TWEAK:
-  ;Move lines text (0x43d2)
-  lui a1,0x43c6
-  mtc1 a1,f14
-  ;Move lines number (0x43be)
-  lui a1,0x43b2
-  mtc1 a1,f4
-  j LINES_POS_TWEAK_RETURN
-  addiu a1,a2,0x400
   .endarea
 
 ;Center wordwrapped lines
@@ -622,6 +622,26 @@
   j LINES_POS_TWEAK
   .skip 4
   LINES_POS_TWEAK_RETURN:
+;Fix the last 3 Beat Character values that are set after
+.org 0x088bd0f0
+  ;swc1 f14,0x438(a2)
+  swc1 f21,0x438(a2)
+.org 0x088bd100
+  ;swc1 f4,0x458(a2)
+  swc1 f20,0x458(a2)
+.org 0x088bd128
+  ;swc1 f14,0x4B8(a2)
+  swc1 f21,0x4b8(a2)
+.org 0x088bd138
+  ;swc1 f4,0x4d8(a2)
+  swc1 f20,0x4d8(a2)
+.org 0x088bd160
+  ;swc1 f14,0x538(a2)
+  swc1 f21,0x538(a2)
+.org 0x088bd170
+  ;swc1 f4,0x558(a2)
+  swc1 f20,0x558(a2)
+
 
 ;Don't use installed data, always return 0 from the function that checks for it
 .org 0x08807438
