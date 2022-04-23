@@ -3,7 +3,7 @@ import click
 import game
 from hacktools import common, cpk, psp
 
-version = "0.9.2"
+version = "1.0.0"
 data = "BakeData/"
 isofile = data + "bake.iso"
 isopatch = data + "bake_patched.iso"
@@ -55,19 +55,23 @@ def extract(iso, cpkparam, strparam, img, font):
 @click.option("--no-iso", is_flag=True, default=False)
 @click.option("--cpk", "cpkparam", is_flag=True, default=False)
 @click.option("--str", "strparam", is_flag=True, default=False)
+@click.option("--lines", is_flag=True, default=False)
 @click.option("--mov", is_flag=True, default=False)
 @click.option("--img", is_flag=True, default=False)
 @click.option("--bin", is_flag=True, default=False)
 @click.option("--font", is_flag=True, default=False)
 @click.option("--cmp", is_flag=True, default=False)
-def repack(no_iso, cpkparam, strparam, mov, img, bin, font, cmp):
-    all = not cpkparam and not strparam and not mov and not img and not bin and not font
+def repack(no_iso, cpkparam, strparam, lines, mov, img, bin, font, cmp):
+    all = not cpkparam and not strparam and not lines and not mov and not img and not bin and not font
     if all or font:
         import repack_font
         repack_font.run(data)
     if all or strparam:
         import format_str
         format_str.repack(data)
+    if all or lines or strparam:
+        import repack_lines
+        repack_lines.run(data)
     if all or bin:
         import repack_bin
         repack_bin.run(data)
@@ -77,7 +81,7 @@ def repack(no_iso, cpkparam, strparam, mov, img, bin, font, cmp):
     if all or img:
         import format_img
         format_img.repack(data)
-    if all or cpkparam or strparam or mov or img:
+    if all or cpkparam or strparam or lines or mov or img:
         common.logMessage("Repacking CPK ...")
         common.mergeFolder(replacecpkfolder, data + "repack_CPK/rom/")
         cpk.repack(cpkin + "rom.cpk", cpkin.replace("extract", "repack") + "rom.cpk", cpkout + "rom/", data + "repack_CPK/rom/", cmp)

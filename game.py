@@ -3,14 +3,21 @@ import json
 from hacktools import common
 
 
+# A list of all the files that contain strings to translate
 strfiles = [
     "ID08373.bin", "ID08374.bin", "ID08375.bin", "ID08376.bin",
     "ID14266.bin", "ID14267.bin", "ID14268.bin", "ID14269.bin",
     "ID14270.bin", "ID14271.bin", "ID14272.bin", "ID14273.bin", "ID14274.bin", "ID14275.bin", "ID14276.bin", "ID14277.bin", "ID14278.bin",
 ]
+# A list of the files that contain game lines that need to be wordwrapped
 wordwrapfiles = [
     "ID14268.bin", "ID14269.bin",
     "ID14270.bin", "ID14271.bin", "ID14272.bin", "ID14273.bin", "ID14274.bin", "ID14275.bin", "ID14276.bin", "ID14277.bin", "ID14278.bin",
+]
+# A list of the files that contain line stats, same order as above
+linefiles = [
+    "ID14281.bin", "ID14285.bin",
+    "ID14288.bin", "ID14291.bin", "ID14294.bin", "ID14297.bin", "ID14300.bin", "ID14303.bin", "ID14306.bin", "ID14310.bin", "ID14313.bin"
 ]
 wordwrap = 390
 
