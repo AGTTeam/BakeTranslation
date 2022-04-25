@@ -181,28 +181,31 @@ def run(data):
             # Get the original line and translation for each line
             for j in range(len(lines)):
                 line = lines[j]
-                if line.index > 0 and line.index3 > 0:
+                if line.index > 0 and line.index3 >= 0:
                     line.original = line.translation = originals[line.index3]
                     if line.original in section:
-                        line.translation = section[line.original][0]
-                        line.translation = line.translation.lstrip("|.*‘’“”…※■―-,'\" ")
+                        line.translation = section[line.original].pop(0)
+                        if len(section[line.original]) == 0:
+                            del section[line.original]
+                        line.translation = line.translation.lstrip("|.*‘’“”…※■―-,'\" ").replace("</dot1>", "").replace("</dot0>", "")
                         if line.translation != "" and line.translation[0] == "|":
                             line.translation = line.translation[1:]
             # Sort the lines
             lines = sorted(lines, key=lambda x: (x.translation))
             # Write the new order
-            order1 = order2 = 0
+            order1 = order2 = 1
             for j in range(len(lines)):
                 line = lines[j]
-                if line.index > 0 and line.index3 > 0 and line.translation != "":
+                if line.index > 0 and line.index3 >= 0 and line.translation != "":
+                    common.logDebug("Writing order", order1, order2, common.varsHex(line))
                     f.seek(4 + line.i * 0x7e + 4)
                     f.writeSByte(order1)
                     f.writeSByte(order2)
-                    f.writeSByte(0)
-                    f.writeSByte(0)
+                    f.writeSByte(1)
+                    f.writeSByte(1)
                     order2 += 1
                     if order2 == 100:
                         order1 += 1
-                        order2 = 0
+                        order2 = 1
         repacked += 1
     common.logMessage("Done! Repacked", repacked, "files")
