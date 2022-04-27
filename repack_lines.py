@@ -182,14 +182,13 @@ def run(data):
             for j in range(len(lines)):
                 line = lines[j]
                 if line.index > 0 and line.index3 >= 0:
-                    line.original = line.translation = originals[line.index3]
+                    line.original = line.translation = originals[line.index - 1]
                     if line.original in section:
                         line.translation = section[line.original].pop(0)
                         if len(section[line.original]) == 0:
                             del section[line.original]
-                        line.translation = line.translation.lstrip("|.*‘’“”…※■―-,'\" ").replace("</dot1>", "").replace("</dot0>", "")
-                        if line.translation != "" and line.translation[0] == "|":
-                            line.translation = line.translation[1:]
+                        line.translation = line.translation.lstrip("|.*‘’“”…※■―-,'\" ?!").replace("</dot1>", "").replace("</dot0>", "")
+                    # common.logMessage(common.varsHex(line))
             # Sort the lines
             lines = sorted(lines, key=lambda x: (x.translation))
             # Write the new order
