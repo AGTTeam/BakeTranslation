@@ -512,7 +512,7 @@
 ;Make some more space for the allocation to replace line breaks with line break+space
 .org 0x08826504
   ;addiu a0,s4,0x1
-  ;addiu a0,s4,0x2
+  addiu a0,s4,0x2
 
 ;Handle vertical text VWF
 .org 0x088e4da8
