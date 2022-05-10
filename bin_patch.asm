@@ -4,25 +4,6 @@
 ;Freed space until 0x0896863c
 .org 0x08968278
   .area 0x3c3
-  SWAP_CIRCLE_CROSS:
-  move t0,a1
-  lbu a1,0x5(t0)
-  srl a2,a1,5
-  srl a3,a1,6
-  xor a2,a2,a3
-  andi a2,a2,0x1
-  sll a3,a2,5
-  sll a2,a2,6
-  or a2,a2,a3
-  xor a2,a1,a2
-  sb a2,0x5(t0)
-  move a1,t0
-  ;Original code
-  lw s1,0x4(a1)
-  lw a2,0x0(a0)
-  j SWAP_CIRCLE_CROSS_RET
-  nop
-
   SCE_SAVE:
   li a2,0x1
   sw a2,0x4(a1)
@@ -32,6 +13,7 @@
 
   VERTICAL_TEXT:
   lw a0,0x30(s1)
+  nop
   sra a0,a0,0x6
   j VERTICAL_TEXT_RET
   move a1,a0
@@ -40,6 +22,7 @@
   move s1,a1
   ;Check if we're drawing vertical text
   lw a1,0x24(a2)
+  nop
   bne a1,0x1,@@ret
   andi a0,a0,0xffff
   ;Return an hardcoded value for some characters
@@ -77,12 +60,15 @@
   GET_SHORT_CHAR_NAME3:
   addiu sp,sp,-0x10
   sw ra,0x0(sp)
+  lw a0,0x50b8(a0)
+  nop
   jal GET_SHORT_CHAR_NAME2
-  lw a0,0x50B8(a0)
+  nop
   lw a0,0x0897f380
   jal 0x088b58d8
   move a1,v0
   lw ra,0x0(sp)
+  nop
   jr ra
   addiu sp,sp,0x10
 
@@ -94,12 +80,13 @@
   sw ra,0x4(sp)
   jal GET_SHORT_CHAR_NAME
   lw s0,-0x70a0(a1)
+  nop
   move a0,s0
   li a1,0
   jal 0x0880a504
   move a2,v0
-  lw s0,0x0(sp)
   lw ra,0x4(sp)
+  lw s0,0x0(sp)
   jr ra
   addiu sp,sp,0x10
 
@@ -113,30 +100,23 @@
   jr ra
   nop
 
-  ;Wrap the sprintf function by repeating the parameter
-  SPRINTF_REPEAT:
-  addiu sp,sp,-0x10
-  sw ra,0x0(sp)
-  jal 0x088cf7f8
-  move a3,a2
-  lw ra,0x0(sp)
-  jr ra
-  addiu sp,sp,0x10
-
   GET_CHAR_LEN:
-  addiu sp,sp,-0x60
+  addiu sp,sp,-0x70
   sw ra,0x0(sp)
   sw a0,0x4(sp)
   sw a1,0x8(sp)
   sw a2,0xc(sp)
-  sw t0,0x10(sp)
-  li a0,0x09d79ecc
+  sw a3,0x10(sp)
+  sw t0,0x14(sp)
+  ;Get the font handle
+  li a0,0x08a03e80
+  lw a0,0x0(a0)
   ;Call sceFontGetCharInfo(SceFontHandle fontHandle, unsigned int charCode, SceFontCharInfo *charInfo[0x3c])
   move a1,a3
   jal 0x0894fbd8
   addiu a2,sp,0x20
-  lw t0,0x10(sp)
-  ;advancex is in charInfo[0x34]
+  lw t0,0x14(sp)
+  ;advancex is in charInfo[0x30]
   addiu a0,sp,0x20
   lw v0,0x34(a0)
   beq t0,zero,@@advancepos
@@ -145,14 +125,16 @@
   @@advancepos:
   li.s f13,64.0
   mtc1 v0,f12
+  nop
   cvt.s.w f12,f12
   div.s f12,f12,f13
   lw ra,0x0(sp)
   lw a0,0x4(sp)
   lw a1,0x8(sp)
   lw a2,0xc(sp)
+  lw a3,0x10(sp)
   jr ra
-  addiu sp,sp,0x60
+  addiu sp,sp,0x70
 
   ;Center wordwrapped lines
   ;a1 = string ptr
@@ -180,11 +162,13 @@
   move a2,zero
   li t0,0x1
   mtc1 a2,f10
+  nop
   mov.s f11,f10
   addiu s0,sp,0x30
   ;Load one character, check for line breaks and 0
   @@loop:
   lhu a3,0x0(a0)
+  nop
   beq a3,0xa,@@linebreak
   addiu a0,a0,0x2
   beq a3,0x0,@@center
@@ -196,6 +180,7 @@
   ;Set f11 if the length is more than the max, store it in s0 and move on
   @@linebreak:
   c.lt.s f10,f11
+  nop
   bc1t @@linebreaksmall
   nop
   mov.s f11,f10
@@ -208,6 +193,7 @@
   ;Finished calculating all the lengths, check the last length with max
   @@center:
   c.lt.s f10,f11
+  nop
   bc1t @@centersmall
   nop
   mov.s f11,f10
@@ -216,6 +202,7 @@
   addiu s0,sp,0x30
   addiu a0,sp,0x40
   lwc1 f10,0x0(s0)
+  nop
   ;Registers setup
   ;a0 = new str
   ;a1 = original str
@@ -224,6 +211,7 @@
   ;f11 = max length
   ;s2 = number of padding characters added
   c.seq.s f10,f11
+  nop
   bc1t @@copyloop
   move s2,zero
   @@padline:
@@ -231,8 +219,10 @@
   ;Length to pad = (f11 - f10) / 2
   sub.s f10,f11,f10
   li.s f12,2.0
+  nop
   div.s f10,f10,f12
   li.s f12,4.84375
+  nop
   div.s f10,f10,f12
   cvt.w.s f10,f10
   mfc1 a2,f10
@@ -258,7 +248,9 @@
   @@copybreak:
   addiu s0,s0,0x4
   lwc1 f10,0x0(s0)
+  nop
   c.seq.s f10,f11
+  nop
   bc1t @@copyloop
   nop
   j @@padline
@@ -307,6 +299,36 @@
   jr ra
   li v0,0x0
 
+  SWAP_CIRCLE_CROSS:
+  move t0,a1
+  lbu a1,0x5(t0)
+  srl a2,a1,5
+  srl a3,a1,6
+  xor a2,a2,a3
+  andi a2,a2,0x1
+  sll a3,a2,5
+  sll a2,a2,6
+  or a2,a2,a3
+  xor a2,a1,a2
+  sb a2,0x5(t0)
+  move a1,t0
+  ;Original code
+  lw s1,0x4(a1)
+  lw a2,0x0(a0)
+  j SWAP_CIRCLE_CROSS_RET
+  nop
+
+  ;Wrap the sprintf function by repeating the parameter
+  SPRINTF_REPEAT:
+  addiu sp,sp,-0x10
+  sw ra,0x0(sp)
+  jal 0x088cf7f8
+  move a3,a2
+  lw ra,0x0(sp)
+  nop
+  jr ra
+  addiu sp,sp,0x10
+
   ;Cut text off taking VWF into account
   ;Originally text is cut off at 0x17 (horizontal) or 0xe (vertical) length
   ;s1 = str ptr (actually a copy, but this is what will be used and cut off)
@@ -332,6 +354,7 @@
   li.s f11,308.0
   @@loop:
   lhu a3,0x0(s1)
+  nop
   beq a3,0xa,@@linebreak
   addiu s1,s1,0x2
   beql a3,0x0,@@return
@@ -344,6 +367,7 @@
   addiu a1,a1,0x1
   add.s f10,f10,f12
   c.lt.s f10,f11
+  nop
   bc1t @@loop
   nop
   j @@return
@@ -382,6 +406,7 @@
   nop
   ;Check if it's the first character of the string
   lw t2,0x350(s0)
+  nop
   addiu t2,t2,0x2
   ;In that case, set the character to an invisible space
   beql t2,s1,@@notfirst
@@ -412,17 +437,19 @@
   sw v0,0x24(s0)
   li a1,REPLACE_LB
   lw a0,0x0(a1)
+  nop
   beq a0,zero,@@retnormal
   nop
   sw zero,0x0(a1)
-  addiu sp,sp,-0x10
+  addiu sp,sp,-0x20
   move a0,v0
   move a1,s3
-  li t8,-1
   sw a0,0x0(sp)
   sw a1,0x4(sp)
   sw a2,0x8(sp)
   sw a3,0xc(sp)
+  sw t8,0x10(sp)
+  li t8,-1
   @@loop:
   addi t8,t8,0x1
   lhu a3,0x0(a1)
@@ -438,7 +465,7 @@
   li a3,0x7c
   @@notfirst:
   sw a3,0x0(a0)
-  addiu s4,s4,0x1
+  addiu s4,s4,0x2
   sw s4,0x28(s0)
   j @@loop
   addiu a0,a0,0x2
@@ -447,8 +474,9 @@
   lw a1,0x4(sp)
   lw a2,0x8(sp)
   lw a3,0xc(sp)
+  lw t8,0x10(sp)
   j LB_TO_SPACE_LONG_RETURN
-  addiu sp,sp,0x10
+  addiu sp,sp,0x20
   @@retnormal:
   move a0,v0
   j LB_TO_SPACE_LONG_RETURN_NORMAL
