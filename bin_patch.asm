@@ -441,14 +441,13 @@
   beq a0,zero,@@retnormal
   nop
   sw zero,0x0(a1)
-  addiu sp,sp,-0x20
+  addiu sp,sp,-0x10
   move a0,v0
   move a1,s3
   sw a0,0x0(sp)
   sw a1,0x4(sp)
   sw a2,0x8(sp)
   sw a3,0xc(sp)
-  sw t8,0x10(sp)
   li t8,-1
   @@loop:
   addi t8,t8,0x1
@@ -464,7 +463,7 @@
   beql t8,zero,@@notfirst
   li a3,0x7c
   @@notfirst:
-  sw a3,0x0(a0)
+  sh a3,0x0(a0)
   addiu s4,s4,0x2
   sw s4,0x28(s0)
   j @@loop
@@ -474,13 +473,11 @@
   lw a1,0x4(sp)
   lw a2,0x8(sp)
   lw a3,0xc(sp)
-  lw t8,0x10(sp)
   j LB_TO_SPACE_LONG_RETURN
-  addiu sp,sp,0x20
+  addiu sp,sp,0x10
   @@retnormal:
-  move a0,v0
   j LB_TO_SPACE_LONG_RETURN_NORMAL
-  move a1,s3
+  move a0,v0
   .endarea
 
 ;Center wordwrapped lines
@@ -515,7 +512,7 @@
 ;Make some more space for the allocation to replace line breaks with line break+space
 .org 0x08826504
   ;addiu a0,s4,0x1
-  addiu a0,s4,0x2
+  ;addiu a0,s4,0x2
 
 ;Handle vertical text VWF
 .org 0x088e4da8
