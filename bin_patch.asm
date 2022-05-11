@@ -302,6 +302,7 @@
   SWAP_CIRCLE_CROSS:
   move t0,a1
   lbu a1,0x5(t0)
+  nop
   srl a2,a1,5
   srl a3,a1,6
   xor a2,a2,a3
