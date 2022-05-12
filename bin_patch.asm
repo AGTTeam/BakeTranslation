@@ -397,6 +397,10 @@
   addiu sp,sp,0x20
 
   LB_TO_SPACE:
+  li s1,REPLACE_LB
+  lw t2,0x0(s1)
+  nop
+  beq t2,zero,@@return
   @@loop:
   li t3,0x20
   lhu t2,0x0(s1)
@@ -419,7 +423,7 @@
   lw s1,0x350(s0)
   li t2,0x0
   j LB_TO_SPACE_RETURN
-  li t3,-0x1
+  li t3,0
 
   REPLACE_LB:
   .dw 0
