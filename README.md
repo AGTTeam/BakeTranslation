@@ -1,4 +1,5 @@
 # Bakemonogatari Translation
+This repository is for the tool used to translate the game. If you're looking for the English patch, click [here](http://www.romhacking.net/translations/6638/).  
 ## Setup
 Create a "BakeData" folder and copy the PSP image as "bake.iso" in it.  
 ## Run from binary
