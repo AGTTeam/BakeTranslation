@@ -1,0 +1,34 @@
+#!/bin/bash
+cd "$(dirname "$0")"
+
+echo "Checking for python installation ..."
+if which python3 > /dev/null 2>&1;
+then
+  :
+else
+  echo "Error: Python is not installed."
+  exit 1
+fi
+
+echo "Checking for pip installation ..."
+if which pip3 > /dev/null 2>&1;
+then
+  :
+else
+  echo "Error: pip is not installed."
+  exit 1
+fi
+
+echo "Checking for pipenv installation ..."
+if which pipenv > /dev/null 2>&1;
+then
+  :
+else
+  pip3 install pipenv
+fi
+
+echo "Syncing dependencies ..."
+pipenv sync
+
+echo "Running tool ..."
+nohup pipenv run python3 tool.py --gui >/dev/null 2>&1 &

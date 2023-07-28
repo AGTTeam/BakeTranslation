@@ -3,9 +3,9 @@ import click
 import game
 from hacktools import common, cpk, psp
 
-version = "1.1.0"
+version = "1.2.0"
 data = "BakeData/"
-isofile = data + "bake.iso"
+isofile = "bake.iso"
 isopatch = data + "bake_patched.iso"
 patchfile = data + "patch.xdelta"
 
@@ -52,7 +52,7 @@ def extract(iso, cpkparam, strparam, img, font):
 
 
 @common.cli.command()
-@click.option("--no-iso", is_flag=True, default=False)
+@click.option("--no-iso", is_flag=True, default=False, hidden=True)
 @click.option("--cpk", "cpkparam", is_flag=True, default=False)
 @click.option("--str", "strparam", is_flag=True, default=False)
 @click.option("--lines", is_flag=True, default=False)
@@ -60,8 +60,7 @@ def extract(iso, cpkparam, strparam, img, font):
 @click.option("--img", is_flag=True, default=False)
 @click.option("--bin", is_flag=True, default=False)
 @click.option("--font", is_flag=True, default=False)
-@click.option("--cmp", is_flag=True, default=False)
-def repack(no_iso, cpkparam, strparam, lines, mov, img, bin, font, cmp):
+def repack(no_iso, cpkparam, strparam, lines, mov, img, bin, font):
     all = not cpkparam and not strparam and not lines and not mov and not img and not bin and not font
     if all or font:
         import repack_font
@@ -84,7 +83,7 @@ def repack(no_iso, cpkparam, strparam, lines, mov, img, bin, font, cmp):
     if all or cpkparam or strparam or lines or mov or img or font:
         common.logMessage("Repacking CPK ...")
         common.mergeFolder(replacecpkfolder, data + "repack_CPK/rom/")
-        cpk.repack(cpkin + "rom.cpk", cpkin.replace("extract", "repack") + "rom.cpk", cpkout + "rom/", data + "repack_CPK/rom/", cmp)
+        cpk.repack(cpkin + "rom.cpk", cpkin.replace("extract", "repack") + "rom.cpk", cpkout + "rom/", data + "repack_CPK/rom/")
         common.logMessage("Done!")
     if all or cpkparam or mov:
         common.logMessage("Repacking Movies CPK ...")
@@ -97,7 +96,7 @@ def repack(no_iso, cpkparam, strparam, lines, mov, img, bin, font, cmp):
         psp.repackUMD(isofile, isopatch, outfolder, patchfile)
 
 
-@common.cli.command()
+@common.cli.command(hidden=True)
 def names():
     tot = 0
     totfiles = 0
@@ -119,7 +118,7 @@ def names():
     common.logMessage(totfiles, tot)
 
 
-@common.cli.command()
+@common.cli.command(hidden=True)
 @click.argument("text")
 def translate(text):
     ret = ""
@@ -137,7 +136,7 @@ def translate(text):
                 common.logMessage("Found string at", common.toHex(pos), "in file", file)
 
 
-@common.cli.command()
+@common.cli.command(hidden=True)
 @click.argument("text")
 def translatevert(text):
     ret = ""
@@ -155,14 +154,14 @@ def translatevert(text):
     common.logMessage(ret)
 
 
-@common.cli.command()
+@common.cli.command(hidden=True)
 @click.argument("file")
 def ama(file):
     import format_img
     format_img.readAMA(cpkout + "rom/" + file)
 
 
-@common.cli.command()
+@common.cli.command(hidden=True)
 @click.argument("text")
 def length(text):
     glyphs = game.readFontGlyphs(data + "fontconfig_input.txt")
@@ -223,11 +222,4 @@ def guessExromExtension(data, entry, filename):
 
 
 if __name__ == "__main__":
-    click.echo("BakeTranslation version " + version)
-    if not os.path.isdir(data):
-        common.logError(data, "folder not found.")
-        quit()
-    if not os.path.isfile(isofile):
-        common.logError(isofile, "file not found.")
-        quit()
-    common.runCLI(common.cli)
+    common.setupTool("BakeTranslation", version, data, isofile, 0xcf808aad)

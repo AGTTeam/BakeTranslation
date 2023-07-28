@@ -1,12 +1,7 @@
 __pycache__
-
-build
-old
-BakeData
-*.log
-*.exe
-*.dll
-*.MPS
-notes.md
 .DS_Store
-.vscode
+*.log
+BakeData
+old
+*.iso
+notes.md

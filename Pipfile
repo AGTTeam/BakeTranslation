@@ -4,10 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-hacktools = {extras = ["armips", "graphics", "psp", "xdelta"], version = "*"}
+hacktools = {extras = ["armips", "cli", "graphics", "psp", "xdelta"], version = "*"}
 
 [dev-packages]
-pyinstaller = "*"
 
 [requires]
 python_version = "3"
